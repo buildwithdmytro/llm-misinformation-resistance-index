@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lmri-harness"
+version = "2.0.0"
+description = "LLM Misinformation Resistance Index (LMRI, a.k.a. the Gaslighting Index) — evaluation harness for misinformation persistence under self-context poisoning and social pressure"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Dmytro Chaban", email = "elanmaks681@gmail.com" }]
+dependencies = [
+    "pyyaml>=6.0",
+    "numpy>=1.24",
+    "litellm>=1.40",
+]
+
+[project.optional-dependencies]
+report = ["matplotlib>=3.7", "reportlab>=4.0"]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+gaslight-run = "gaslight.run:main"
+gaslight-judge = "gaslight.judge:main"
+gaslight-report = "gaslight.report:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

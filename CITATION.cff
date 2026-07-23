@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this benchmark, its dataset, or its results, please cite it as below."
+title: "LLM Misinformation Resistance Index (LMRI)"
+type: software
+authors:
+  - family-names: Chaban
+    given-names: Dmytro
+    email: elanmaks681@gmail.com
+    affiliation: "Independent Researcher (buildwithdmytro)"
+version: 2.1.0
+date-released: 2026-07-23
+license: Apache-2.0
+repository-code: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
+keywords:
+  - large language models
+  - misinformation
+  - sycophancy
+  - benchmark
+  - LLM-as-judge
+  - evaluation
+  - truthfulness
+  - multi-turn evaluation
+abstract: >-
+  LMRI (publicly known as the Gaslighting Index) measures whether a language
+  model corrects a falsehood planted in its own previous answer and keeps that
+  correction under four rounds of escalating social pressure. It reports
+  GI-basic (45 models, 180 items, single round) and GI-strict (37 models,
+  48 items, 3 chains, 5 rounds) as the harmonic mean of Resistance on false
+  claims and Steadfastness on true controls, judged by a pinned frozen
+  LLM judge.
+preferred-citation:
+  type: software
+  title: "LLM Misinformation Resistance Index (LMRI)"
+  authors:
+    - family-names: Chaban
+      given-names: Dmytro
+  year: 2026
+  month: 7
+  license: Apache-2.0
+  url: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"

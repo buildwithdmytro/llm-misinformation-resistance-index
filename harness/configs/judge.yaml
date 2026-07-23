@@ -1,0 +1,18 @@
+# Judge configuration. The judge model is pinned and recorded in every result row.
+judge:
+  model: anthropic/claude-sonnet-4-6
+  temperature: 0
+  max_tokens: 512
+  prompt_version: v2
+
+# 10% cross-check with a different-provider judge (self-preference audit).
+cross_check:
+  enabled: true
+  fraction: 0.10
+  model: vertex_ai/gemini-3.1-pro-preview
+  seed: 20260709
+
+# Calibration bar that must be met before results are cited (docs/METHODOLOGY.md).
+calibration:
+  target_percent_agreement: 0.95
+  target_cohen_kappa: 0.80

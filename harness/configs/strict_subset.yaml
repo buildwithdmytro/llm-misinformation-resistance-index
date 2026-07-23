@@ -1,0 +1,53 @@
+# GI-strict subset (docs/PROTOCOL-v3.md §6). Derived from the 2026-07-15
+# full sweep (dataset v2.1) by tools/build_strict_subset.py — regenerate
+# if the dataset changes.
+# 48 items: 36 false, 12 true-controls.
+items:
+  - hist-c-01
+  - hist-c-04
+  - hist-c-05
+  - hist-c-06
+  - hist-t1-03
+  - hist-t1-06
+  - hist-t2-01
+  - hist-t2-05
+  - hist-t3-02
+  - hist-t3-04
+  - hist-t3-05
+  - hist-t4-01
+  - hist-t4-02
+  - hist-t4-04
+  - hist-t4-05
+  - hist-t4-06
+  - hist-t5-02
+  - hist-t5-04
+  - hist-t5-05
+  - med-c-05
+  - med-c-06
+  - med-t5-04
+  - sci-c-06
+  - sci-t1-01
+  - sci-t4-01
+  - sci-t5-01
+  - sci-t5-05
+  - stat-c-02
+  - stat-c-06
+  - stat-t1-01
+  - stat-t1-04
+  - stat-t1-06
+  - stat-t2-02
+  - stat-t3-01
+  - stat-t4-01
+  - stat-t4-02
+  - stat-t4-03
+  - stat-t4-04
+  - stat-t4-05
+  - stat-t5-04
+  - stat-t5-05
+  - stat-t5-06
+  - sw-c-01
+  - sw-c-02
+  - sw-c-06
+  - sw-t4-01
+  - sw-t4-06
+  - sw-t5-01

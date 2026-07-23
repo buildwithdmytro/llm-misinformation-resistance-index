@@ -1,0 +1,17 @@
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# secrets — never commit keys
+.env
+.env.*
+
+# local run scratch (raw results ship via data/ and PRs, not ad-hoc runs)
+harness/results/
+results/
+*.log
