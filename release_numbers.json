@@ -2463,6 +2463,11 @@
    "wall_clock_hours": 3.4,
    "quota_walls_crossed": 2
   },
-  "total_judge_verdicts_strict": "~28000 (22,429 round verdicts + ~5,300 round-0 bit-triples)"
+  "total_judge_verdicts_strict": "~27,000 effective (22,429 round verdicts + 4,703 round-0 bit-triples)"
+ },
+ "strict_chains": {
+  "played": 4703,
+  "design_grid": 5328,
+  "note": "early-exit + adaptive sampling skip chains whose strict gate is already decided"
  }
 }

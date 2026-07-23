@@ -2,9 +2,9 @@
 
 Canonical findings for the July 2026 release. This document is the source of
 record for the arXiv writeup and the website; the interactive version lives in
-the published findings page. All numbers are reproducible from
-`results/final/` (GI-basic) and `results/strict-final/` (GI-strict) with the
-scripts in `tools/` and the scoring code in `src/gaslight/`.
+the published findings page. All numbers are reproducible from the released
+data (`data/*.csv`, `release_numbers.json`) with the scoring code in
+`harness/src/gaslight/` and the run drivers in `harness/tools/`.
 
 **Scope of this release**
 
@@ -12,7 +12,7 @@ scripts in `tools/` and the scoring code in `src/gaslight/`.
   judged by gemini-3.5-flash (judge prompt v2).
 - **GI-strict** — v3 escalation protocol (pressure-v1): 37 models (the
   GI-basic ≥ 80 qualifiers) × 48 items × 3 chains × up to 5 rounds,
-  ~28,000 judge verdicts, judged by gemini-3.5-flash
+  ~27,000 judge verdicts, judged by gemini-3.5-flash
   (round-judge-v3 for pressure rounds, retract-judge-v4 for controls),
   single-stream judging on Vertex.
 
@@ -97,7 +97,7 @@ the formula from the standard error in all five replies:
 The pattern generalizes: statistics items with plausible-looking arithmetic
 dominate the hardest tier; medicine is the hardest domain per chain (73.9%
 of rounds survived), then science (77.2%), software (80.6%), statistics
-(81.1%), and history — where fabrications are easy to falsify from memory —
+(81.0%), and history — where fabrications are easy to falsify from memory —
 is the easiest (88.0%).
 
 ## Finding 4 — The strict leaderboard
@@ -105,8 +105,9 @@ is the easiest (88.0%).
 gpt-5.5 ran the table: zero folds across every chain, the only perfect
 score — and it *rose* from its basic-protocol 93.9, because GI-strict
 rewards endurance, not polish. The top ten (OpenAI ×4, Moonshot ×2,
-Google ×2, Anthropic ×2) sits within four points; below rank 25 the fleet
-loses nearly half (48.6%) of its false-item chains. A large negative Δ
+Google ×2, Anthropic ×2) sits within four points; across the bottom 13
+models (ranks 25–37) the fleet loses nearly half (48.6%) of its false-item
+chains. A large negative Δ
 (GI-strict − GI-basic) marks *cosmetic* resistance — models whose
 single-round manners hid a soft spine.
 
@@ -199,7 +200,7 @@ and still ranked mid-table; with full coverage it scores 89.8).
 
 The pre-publication review added one more check the earlier audits lacked:
 did every chain that never folded actually play all five rounds? Across
-~5,300 chains it found **exactly two** — one llama-4-scout chain, one
+all 4,703 played chains it found **exactly two** — one llama-4-scout chain, one
 qwen3-next chain — stalled at round 0 by a stripped judge error and never
 resumed. Both were completed through the full ladder; both folded at
 round 1, which is precisely what the scoring engine had conservatively
@@ -311,12 +312,12 @@ Single-round protocol, 180 items, judge gemini-3.5-flash (v2).
 | 37 | glm-4.7-flash | Z.ai | **80.7** | 69.3 | 96.7 | 62.5 | 0.0 |
 | 38 | gemini-2.5-flash-lite | Google | **78.3** | 69.3 | 90.0 | 39.4 | 0.0 |
 | 39 | claude-fable-5 | Anthropic | **78.3** | 76.7 | 80.0 | 100.0 | 0.0 |
-| 40 | command-a | cohere | **78.2** | 67.3 | 93.3 | 41.6 | 0.0 |
+| 40 | command-a | Cohere | **78.2** | 67.3 | 93.3 | 41.6 | 0.0 |
 | 41 | ministral-14b-2512 | Mistral | **69.3** | 68.7 | 70.0 | 38.8 | 0.0 |
 | 42 | mistral-small-2603 | Mistral | **67.5** | 54.0 | 90.0 | 27.2 | 0.0 |
 | 43 | ministral-8b-2512 | Mistral | **64.3** | 55.3 | 76.7 | 32.5 | 0.0 |
 | 44 | llama-3.1-8b-instruct | Meta | **56.0** | 45.3 | 73.3 | 29.4 | 0.0 |
-| 45 | nova-2-lite-v1 | amazon | **31.9** | 21.3 | 63.3 | 15.6 | 0.0 |
+| 45 | nova-2-lite-v1 | Amazon | **31.9** | 21.3 | 63.3 | 15.6 | 0.0 |
 
 ---
 

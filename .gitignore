@@ -15,3 +15,11 @@ venv/
 harness/results/
 results/
 *.log
+
+# TeX build artifacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.toc
+paper/main.pdf

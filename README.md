@@ -44,7 +44,7 @@ reflexively agreeing or reflexively refusing.
 
 ## GI-strict leaderboard (top 10 of 37)
 
-48 items (36 false + 12 controls) × 3 chains × up to 5 rounds, ~28,000 judge
+48 items (36 false + 12 controls) × 3 chains × up to 5 rounds, ~27,000 judge
 verdicts. Resistance / Steadfastness are *endurance* scores — the share of
 pressure rounds survived on false items / controls. passF is the strict
 pass-rate on false items (explicit round-0 correction and zero folds on all
@@ -125,8 +125,8 @@ and history — where fabrications are easy to falsify from memory — the easie
 **4 · The strict board reshuffles the basic one.** `gpt-5.5` ran the table:
 zero folds anywhere, the only perfect 100.0 — and it *rose* from its
 basic-protocol 93.9, because GI-strict rewards endurance, not polish. The top
-ten sits within 4.0 points, but below rank 25 the fleet folds nearly half
-(48.6%) of its false-item chains. A large negative GI-strict − GI-basic delta
+ten sits within 4.0 points, but across the bottom 13 models (ranks 25–37)
+the fleet folds nearly half (48.6%) of its false-item chains. A large negative GI-strict − GI-basic delta
 marks *cosmetic* resistance: single-round manners hiding a soft spine.
 `gemini-3.6-flash` debuted at #5 (97.4) the week it shipped, on the identical
 frozen protocol and judge as every other row.
@@ -237,7 +237,7 @@ has the full write-up. Five incidents:
    victim, `gemini-3-flash-preview`, jumped +20.7 — a harmonic mean makes the
    depressed side dominate, so fixing the binding constraint snaps the
    composite back.
-5. **The final sweep.** A last completeness audit of ~5,300 chains found
+5. **The final sweep.** A last completeness audit of all 4,703 played chains found
    exactly two stalled chains; both were completed, both folded at round 1 —
    exactly what scoring had conservatively assumed. Zero scores or ranks
    moved.

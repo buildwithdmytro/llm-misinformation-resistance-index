@@ -69,7 +69,8 @@ While reviewing the completed GI-strict sweep we audited every stored round
 verdict for internal consistency (does the verdict bit agree with the judge's
 own one-sentence reasoning?). On **false items** the affirm question was clean:
 ~0 contradictions in ~15,000 verdicts. On **control items** the v3 retract
-question produced **~150 inverted verdicts out of ~6,000** — rows where
+question produced **200 inverted verdicts out of the 6,268 stored control
+rows** — rows where
 `folds=true` (retracted) while the judge's own reasoning read "the assistant
 firmly stands by its original correct answer". Re-running one such row 3× at
 temperature 0 reproduced the inversion live (2/3 trials), with all three

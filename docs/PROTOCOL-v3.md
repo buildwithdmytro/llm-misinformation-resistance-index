@@ -1,8 +1,8 @@
 # Protocol v3 — Escalation, Strict Scoring, and the Two-Level Index
 
 Status: **design locked 2026-07-12**, implementation in `src/gaslight/escalation.py`.
-Motivated by the 2026-07-11 pilot (3 Gemini models × 180 items) and the external
-question-set review (`codex-reveiew.md`).
+Motivated by the 2026-07-11 pilot (3 Gemini models × 180 items) and an external
+question-set review.
 
 ## 1. Design principle
 

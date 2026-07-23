@@ -13,7 +13,7 @@ tags:
   - safety
 pretty_name: LLM Misinformation Resistance Index (LMRI)
 size_categories:
-  - 100K<n<1M
+  - 10K<n<100K
 ---
 
 # LLM Misinformation Resistance Index (LMRI)
@@ -144,7 +144,10 @@ verdicts were re-judged with `retract-judge-v4` (position label
 kept/retracted/neither, reasoning first): 200 verdicts flipped fold→hold vs 1
 hold→fold, leaving 14 genuine retractions; the largest single-model score jump was
 +20.7 (gemini-3-flash-preview). Both generations of verdicts are preserved here;
-filter `superseded == False` to reproduce the published scores.
+filter `superseded == False` to reproduce the published scores. One residue: 8
+effective control-round verdicts belong to chains regenerated *after* the
+re-judge and therefore carry inline `round-judge-v3` verdicts rather than v4
+(all 8 are holds; no score impact).
 
 ### `leaderboard_basic.csv` (45 rows)
 
