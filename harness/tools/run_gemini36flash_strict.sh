@@ -12,7 +12,7 @@ cd "$(dirname "$0")/.."
 set -a; . ./.env; set +a
 export PYTHONPATH=src
 RD=results/strict-final
-CFG=${1:-configs/models.strict-final.yaml}  # single-model YAML recommended; pass as $1
+CFG=/tmp/claude-1000/gemini36flash_strict.yaml
 SLUG=vertex_ai_gemini-3.6-flash
 GEN="$RD/raw/$SLUG.escalation.jsonl"
 JDG="$RD/raw/$SLUG.escalation.judge.jsonl"
@@ -57,6 +57,7 @@ for p in sys.argv[1:]:
 PY
 }
 
+stall=0
 echo "[$(date +%F' '%T)] STRICT-START gemini-3.6-flash (48 items x 3 samples x <=5 rounds)" >> "$LOG"
 while true; do
   strip_err
@@ -74,10 +75,21 @@ while true; do
     echo "[$(date +%F' '%T)] STRICT-RUN-COMPLETE" >> "$LOG"; break
   fi
   strip_err
-  # Little/no forward progress => quota wall; back off.
+  # Little/no forward progress *twice running* => quota wall; back off. A single
+  # stalled pass is usually just convergence: the run finished, one row errored,
+  # and stripping it leaves exactly one row to redo — sleeping 30m for that is
+  # wasted time and makes the log read as though a wall was hit when none was.
   if [ $((A - B)) -lt 10 ]; then
-    echo "[$(date +%F' '%T)] wall (delta<10) — sleeping 30m" >> "$LOG"
-    sleep 1800
+    stall=$((stall + 1))
+    if [ "$stall" -ge 2 ]; then
+      echo "[$(date +%F' '%T)] wall (no progress x$stall) — sleeping 30m" >> "$LOG"
+      sleep 1800
+      stall=0
+    else
+      echo "[$(date +%F' '%T)] no progress; retrying stripped rows immediately" >> "$LOG"
+    fi
+  else
+    stall=0
   fi
 done
 

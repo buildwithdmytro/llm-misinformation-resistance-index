@@ -27,7 +27,7 @@
  },
  "protocol": {
   "basic": {
-   "n_models": 45,
+   "n_models": 46,
    "samples": 1,
    "max_tokens": 4096,
    "temperature": null,
@@ -39,7 +39,7 @@
    }
   },
   "strict": {
-   "n_models": 37,
+   "n_models": 38,
    "qualification": "GI-basic >= 80",
    "samples": 3,
    "rounds": 5,
@@ -89,6 +89,24 @@
     0,
     0,
     101
+   ],
+   "ctrl": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    36
+   ]
+  },
+  "openrouter_anthropic_claude-opus-5": {
+   "false": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    105
    ],
    "ctrl": [
     0,
@@ -741,6 +759,11 @@
    "capitulation_pct": 3.8,
    "n_false_chains": 108
   },
+  "openrouter_anthropic_claude-opus-5": {
+   "r0_fail_pct": 0.9,
+   "capitulation_pct": 0.0,
+   "n_false_chains": 106
+  },
   "openrouter_anthropic_claude-sonnet-5": {
    "r0_fail_pct": 3.8,
    "capitulation_pct": 1.0,
@@ -917,13 +940,20 @@
    "n_false_chains": 106
   }
  },
- "n_round_verdicts_effective": 22429,
+ "n_round_verdicts_effective": 23135,
+ "strict_chains": {
+  "played": 4845,
+  "design_grid": 5472,
+  "note": "early-exit + adaptive sampling skip chains whose strict gate is already decided; endurance is averaged over chains played"
+ },
+ "n_round0_bit_triples": 4845,
+ "n_judge_verdicts_total": 27980,
  "domain_survival_pct": {
-  "hist": 88.0,
-  "med": 73.9,
-  "sci": 77.2,
-  "stat": 81.0,
-  "sw": 80.6
+  "hist": 88.3,
+  "med": 74.7,
+  "sci": 77.9,
+  "stat": 81.5,
+  "sw": 81.2
  },
  "hardest_item": {
   "id": "stat-t5-05",
@@ -931,11 +961,11 @@
    "openrouter_moonshotai_kimi-k2.6",
    "openrouter_openai_gpt-5.5"
   ],
-  "mean_rounds_survived": 1.08,
-  "n_chains": 75,
-  "n_models_broken": 35
+  "mean_rounds_survived": 1.07,
+  "n_chains": 76,
+  "n_models_broken": 36
  },
- "perfect_control_models": 29,
+ "perfect_control_models": 30,
  "leaderboard_strict": [
   {
    "resistance_endurance": 100.0,
@@ -972,6 +1002,18 @@
    "pressure_version": "pressure-v1",
    "n_rounds": 4,
    "model": "openrouter_openai_gpt-5.6-terra"
+  },
+  {
+   "resistance_endurance": 97.2,
+   "steadfastness_endurance": 100.0,
+   "gi_strict": 98.6,
+   "strict_pass_rate_false": 88.9,
+   "strict_pass_rate_controls": 100.0,
+   "n_false_items": 36,
+   "n_control_items": 12,
+   "pressure_version": "pressure-v1",
+   "n_rounds": 4,
+   "model": "openrouter_anthropic_claude-opus-5"
   },
   {
    "resistance_endurance": 95.5,
@@ -1660,6 +1702,29 @@
    ]
   },
   {
+   "explicitness": 100.0,
+   "flip_rate": 0.0,
+   "index": 95.31468531468532,
+   "index_ci": [
+    90.55555555555556,
+    97.23611111111092
+   ],
+   "model": "openrouter/anthropic/claude-opus-5",
+   "n_missing": 0,
+   "rank": 13,
+   "resistance": 94.0,
+   "resistance_ci": [
+    90.0,
+    97.33333333333334
+   ],
+   "stat_tier": 2,
+   "steadfastness": 96.66666666666667,
+   "steadfastness_ci": [
+    90.0,
+    100.0
+   ]
+  },
+  {
    "explicitness": 97.16312056737588,
    "flip_rate": 0.0,
    "index": 95.31468531468532,
@@ -1669,7 +1734,7 @@
    ],
    "model": "openrouter/z-ai/glm-5-turbo",
    "n_missing": 0,
-   "rank": 13,
+   "rank": 14,
    "resistance": 94.0,
    "resistance_ci": [
     90.0,
@@ -1692,7 +1757,7 @@
    ],
    "model": "openrouter/moonshotai/kimi-k2.6",
    "n_missing": 0,
-   "rank": 14,
+   "rank": 15,
    "resistance": 90.66666666666667,
    "resistance_ci": [
     86.0,
@@ -1715,7 +1780,7 @@
    ],
    "model": "openrouter/qwen/qwen3-next-80b-a3b-thinking",
    "n_missing": 0,
-   "rank": 15,
+   "rank": 16,
    "resistance": 90.66666666666667,
    "resistance_ci": [
     86.0,
@@ -1738,7 +1803,7 @@
    ],
    "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b",
    "n_missing": 0,
-   "rank": 16,
+   "rank": 17,
    "resistance": 90.0,
    "resistance_ci": [
     85.33333333333334,
@@ -1761,7 +1826,7 @@
    ],
    "model": "openrouter/openai/gpt-5.6-luna",
    "n_missing": 0,
-   "rank": 17,
+   "rank": 18,
    "resistance": 90.0,
    "resistance_ci": [
     85.31666666666682,
@@ -1784,7 +1849,7 @@
    ],
    "model": "openrouter/qwen/qwen3.6-35b-a3b",
    "n_missing": 0,
-   "rank": 18,
+   "rank": 19,
    "resistance": 90.0,
    "resistance_ci": [
     85.33333333333334,
@@ -1807,7 +1872,7 @@
    ],
    "model": "vertex_ai/gemini-2.5-pro",
    "n_missing": 0,
-   "rank": 19,
+   "rank": 20,
    "resistance": 90.0,
    "resistance_ci": [
     84.66666666666667,
@@ -1830,7 +1895,7 @@
    ],
    "model": "openrouter/openai/gpt-5.4",
    "n_missing": 0,
-   "rank": 20,
+   "rank": 21,
    "resistance": 88.66666666666667,
    "resistance_ci": [
     83.33333333333334,
@@ -1853,7 +1918,7 @@
    ],
    "model": "openrouter/openai/gpt-5.5",
    "n_missing": 0,
-   "rank": 21,
+   "rank": 22,
    "resistance": 91.33333333333333,
    "resistance_ci": [
     86.66666666666667,
@@ -1876,7 +1941,7 @@
    ],
    "model": "openrouter/qwen/qwen3.6-flash",
    "n_missing": 0,
-   "rank": 22,
+   "rank": 23,
    "resistance": 88.0,
    "resistance_ci": [
     82.66666666666667,
@@ -1899,7 +1964,7 @@
    ],
    "model": "vertex_ai/gemini-3.1-flash-lite",
    "n_missing": 0,
-   "rank": 23,
+   "rank": 24,
    "resistance": 90.0,
    "resistance_ci": [
     84.66666666666667,
@@ -1922,7 +1987,7 @@
    ],
    "model": "vertex_ai/gemini-3.5-flash",
    "n_missing": 0,
-   "rank": 24,
+   "rank": 25,
    "resistance": 92.0,
    "resistance_ci": [
     87.33333333333333,
@@ -1945,7 +2010,7 @@
    ],
    "model": "openrouter/deepseek/deepseek-v4-pro",
    "n_missing": 0,
-   "rank": 25,
+   "rank": 26,
    "resistance": 85.33333333333333,
    "resistance_ci": [
     79.33333333333333,
@@ -1968,7 +2033,7 @@
    ],
    "model": "openrouter/minimax/minimax-m2.5",
    "n_missing": 0,
-   "rank": 26,
+   "rank": 27,
    "resistance": 84.66666666666667,
    "resistance_ci": [
     78.66666666666666,
@@ -1991,7 +2056,7 @@
    ],
    "model": "vertex_ai/gemini-2.5-flash",
    "n_missing": 0,
-   "rank": 27,
+   "rank": 28,
    "resistance": 84.66666666666667,
    "resistance_ci": [
     78.66666666666666,
@@ -2014,7 +2079,7 @@
    ],
    "model": "openrouter/anthropic/claude-haiku-4.5",
    "n_missing": 0,
-   "rank": 28,
+   "rank": 29,
    "resistance": 84.0,
    "resistance_ci": [
     78.0,
@@ -2037,7 +2102,7 @@
    ],
    "model": "openrouter/nvidia/nemotron-3-super-120b-a12b",
    "n_missing": 0,
-   "rank": 29,
+   "rank": 30,
    "resistance": 84.66666666666667,
    "resistance_ci": [
     78.66666666666666,
@@ -2060,7 +2125,7 @@
    ],
    "model": "openrouter/openai/gpt-5.4-mini",
    "n_missing": 0,
-   "rank": 30,
+   "rank": 31,
    "resistance": 83.33333333333333,
    "resistance_ci": [
     77.33333333333333,
@@ -2083,7 +2148,7 @@
    ],
    "model": "openrouter/deepseek/deepseek-v3.2",
    "n_missing": 0,
-   "rank": 31,
+   "rank": 32,
    "resistance": 80.0,
    "resistance_ci": [
     73.33333333333333,
@@ -2106,7 +2171,7 @@
    ],
    "model": "openrouter/meta-llama/llama-4-maverick",
    "n_missing": 0,
-   "rank": 32,
+   "rank": 33,
    "resistance": 80.0,
    "resistance_ci": [
     73.33333333333333,
@@ -2129,7 +2194,7 @@
    ],
    "model": "openrouter/deepseek/deepseek-v4-flash",
    "n_missing": 0,
-   "rank": 33,
+   "rank": 34,
    "resistance": 78.66666666666667,
    "resistance_ci": [
     72.0,
@@ -2152,7 +2217,7 @@
    ],
    "model": "openrouter/mistralai/mistral-medium-3-5",
    "n_missing": 0,
-   "rank": 34,
+   "rank": 35,
    "resistance": 74.0,
    "resistance_ci": [
     67.33333333333333,
@@ -2175,7 +2240,7 @@
    ],
    "model": "openrouter/mistralai/mistral-large-2512",
    "n_missing": 0,
-   "rank": 35,
+   "rank": 36,
    "resistance": 77.33333333333333,
    "resistance_ci": [
     70.66666666666667,
@@ -2198,7 +2263,7 @@
    ],
    "model": "openrouter/meta-llama/llama-4-scout",
    "n_missing": 0,
-   "rank": 36,
+   "rank": 37,
    "resistance": 68.66666666666667,
    "resistance_ci": [
     61.33333333333333,
@@ -2221,7 +2286,7 @@
    ],
    "model": "openrouter/z-ai/glm-4.7-flash",
    "n_missing": 0,
-   "rank": 37,
+   "rank": 38,
    "resistance": 69.33333333333333,
    "resistance_ci": [
     62.0,
@@ -2244,7 +2309,7 @@
    ],
    "model": "vertex_ai/gemini-2.5-flash-lite",
    "n_missing": 0,
-   "rank": 38,
+   "rank": 39,
    "resistance": 69.33333333333333,
    "resistance_ci": [
     62.0,
@@ -2267,7 +2332,7 @@
    ],
    "model": "openrouter/anthropic/claude-fable-5",
    "n_missing": 0,
-   "rank": 39,
+   "rank": 40,
    "resistance": 76.66666666666667,
    "resistance_ci": [
     69.33333333333334,
@@ -2290,7 +2355,7 @@
    ],
    "model": "openrouter/cohere/command-a",
    "n_missing": 0,
-   "rank": 40,
+   "rank": 41,
    "resistance": 67.33333333333333,
    "resistance_ci": [
     59.333333333333336,
@@ -2313,7 +2378,7 @@
    ],
    "model": "openrouter/mistralai/ministral-14b-2512",
    "n_missing": 0,
-   "rank": 41,
+   "rank": 42,
    "resistance": 68.66666666666667,
    "resistance_ci": [
     61.33333333333333,
@@ -2336,7 +2401,7 @@
    ],
    "model": "openrouter/mistralai/mistral-small-2603",
    "n_missing": 0,
-   "rank": 42,
+   "rank": 43,
    "resistance": 54.0,
    "resistance_ci": [
     46.0,
@@ -2359,7 +2424,7 @@
    ],
    "model": "openrouter/mistralai/ministral-8b-2512",
    "n_missing": 0,
-   "rank": 43,
+   "rank": 44,
    "resistance": 55.333333333333336,
    "resistance_ci": [
     47.333333333333336,
@@ -2382,7 +2447,7 @@
    ],
    "model": "openrouter/meta-llama/llama-3.1-8b-instruct",
    "n_missing": 0,
-   "rank": 44,
+   "rank": 45,
    "resistance": 45.333333333333336,
    "resistance_ci": [
     37.333333333333336,
@@ -2405,7 +2470,7 @@
    ],
    "model": "openrouter/amazon/nova-2-lite-v1",
    "n_missing": 0,
-   "rank": 45,
+   "rank": 46,
    "resistance": 21.333333333333332,
    "resistance_ci": [
     14.666666666666666,
@@ -2419,8 +2484,337 @@
    ]
   }
  ],
- "below_rank25_fold_pct": 48.6,
- "top10_spread": 4.0,
+ "leaderboard_lmri": [
+  {
+   "model": "openrouter_openai_gpt-5.5",
+   "gi_basic": 93.9,
+   "gi_strict": 100.0,
+   "gi_strict_stretched": 100.0,
+   "lmri": 98.8,
+   "rank": 1
+  },
+  {
+   "model": "openrouter_openai_gpt-5.6-sol",
+   "gi_basic": 98.3,
+   "gi_strict": 99.5,
+   "gi_strict_stretched": 96.9,
+   "lmri": 97.2,
+   "rank": 2
+  },
+  {
+   "model": "openrouter_openai_gpt-5.6-terra",
+   "gi_basic": 96.6,
+   "gi_strict": 99.5,
+   "gi_strict_stretched": 96.9,
+   "lmri": 96.8,
+   "rank": 3
+  },
+  {
+   "model": "openrouter_anthropic_claude-opus-5",
+   "gi_basic": 95.3,
+   "gi_strict": 98.6,
+   "gi_strict_stretched": 91.9,
+   "lmri": 92.6,
+   "rank": 4
+  },
+  {
+   "model": "openrouter_moonshotai_kimi-k2.6",
+   "gi_basic": 95.1,
+   "gi_strict": 97.7,
+   "gi_strict_stretched": 87.6,
+   "lmri": 89.1,
+   "rank": 5
+  },
+  {
+   "model": "vertex_ai_gemini-3.6-flash",
+   "gi_basic": 98.3,
+   "gi_strict": 97.4,
+   "gi_strict_stretched": 86.2,
+   "lmri": 88.7,
+   "rank": 6
+  },
+  {
+   "model": "openrouter_moonshotai_kimi-k3",
+   "gi_basic": 98.3,
+   "gi_strict": 97.2,
+   "gi_strict_stretched": 85.4,
+   "lmri": 88.0,
+   "rank": 7
+  },
+  {
+   "model": "openrouter_anthropic_claude-opus-4.8",
+   "gi_basic": 99.0,
+   "gi_strict": 97.0,
+   "gi_strict_stretched": 84.6,
+   "lmri": 87.4,
+   "rank": 8
+  },
+  {
+   "model": "openrouter_openai_gpt-5.6-luna",
+   "gi_basic": 94.7,
+   "gi_strict": 97.1,
+   "gi_strict_stretched": 85.0,
+   "lmri": 86.9,
+   "rank": 9
+  },
+  {
+   "model": "vertex_ai_gemini-3.1-pro-preview",
+   "gi_basic": 98.3,
+   "gi_strict": 96.5,
+   "gi_strict_stretched": 82.6,
+   "lmri": 85.7,
+   "rank": 10
+  },
+  {
+   "model": "openrouter_anthropic_claude-sonnet-5",
+   "gi_basic": 98.3,
+   "gi_strict": 96.0,
+   "gi_strict_stretched": 80.7,
+   "lmri": 84.2,
+   "rank": 11
+  },
+  {
+   "model": "openrouter_qwen_qwen3.7-max",
+   "gi_basic": 96.9,
+   "gi_strict": 95.7,
+   "gi_strict_stretched": 79.6,
+   "lmri": 83.1,
+   "rank": 12
+  },
+  {
+   "model": "openrouter_openai_gpt-5.4",
+   "gi_basic": 94.0,
+   "gi_strict": 95.8,
+   "gi_strict_stretched": 80.0,
+   "lmri": 82.8,
+   "rank": 13
+  },
+  {
+   "model": "openrouter_z-ai_glm-5.2",
+   "gi_basic": 97.6,
+   "gi_strict": 95.3,
+   "gi_strict_stretched": 78.2,
+   "lmri": 82.1,
+   "rank": 14
+  },
+  {
+   "model": "openrouter_z-ai_glm-5-turbo",
+   "gi_basic": 95.3,
+   "gi_strict": 92.7,
+   "gi_strict_stretched": 70.4,
+   "lmri": 75.4,
+   "rank": 15
+  },
+  {
+   "model": "vertex_ai_gemini-3-flash-preview",
+   "gi_basic": 96.2,
+   "gi_strict": 91.6,
+   "gi_strict_stretched": 67.6,
+   "lmri": 73.3,
+   "rank": 16
+  },
+  {
+   "model": "openrouter_anthropic_claude-haiku-4.5",
+   "gi_basic": 91.3,
+   "gi_strict": 90.2,
+   "gi_strict_stretched": 64.4,
+   "lmri": 69.7,
+   "rank": 17
+  },
+  {
+   "model": "vertex_ai_gemini-2.5-pro",
+   "gi_basic": 94.7,
+   "gi_strict": 89.8,
+   "gi_strict_stretched": 63.5,
+   "lmri": 69.7,
+   "rank": 18
+  },
+  {
+   "model": "openrouter_qwen_qwen3.6-flash",
+   "gi_basic": 93.6,
+   "gi_strict": 89.4,
+   "gi_strict_stretched": 62.6,
+   "lmri": 68.8,
+   "rank": 19
+  },
+  {
+   "model": "openrouter_nvidia_nemotron-3-ultra-550b-a55b",
+   "gi_basic": 94.7,
+   "gi_strict": 89.0,
+   "gi_strict_stretched": 61.8,
+   "lmri": 68.4,
+   "rank": 20
+  },
+  {
+   "model": "openrouter_qwen_qwen3.6-35b-a3b",
+   "gi_basic": 94.7,
+   "gi_strict": 88.2,
+   "gi_strict_stretched": 60.2,
+   "lmri": 67.1,
+   "rank": 21
+  },
+  {
+   "model": "openrouter_qwen_qwen3.7-plus",
+   "gi_basic": 95.5,
+   "gi_strict": 87.9,
+   "gi_strict_stretched": 59.6,
+   "lmri": 66.8,
+   "rank": 22
+  },
+  {
+   "model": "openrouter_z-ai_glm-4.7",
+   "gi_basic": 95.5,
+   "gi_strict": 86.3,
+   "gi_strict_stretched": 56.7,
+   "lmri": 64.4,
+   "rank": 23
+  },
+  {
+   "model": "openrouter_minimax_minimax-m2.5",
+   "gi_basic": 91.7,
+   "gi_strict": 83.7,
+   "gi_strict_stretched": 52.4,
+   "lmri": 60.3,
+   "rank": 24
+  },
+  {
+   "model": "openrouter_openai_gpt-5.4-mini",
+   "gi_basic": 89.5,
+   "gi_strict": 83.6,
+   "gi_strict_stretched": 52.2,
+   "lmri": 59.7,
+   "rank": 25
+  },
+  {
+   "model": "vertex_ai_gemini-3.5-flash",
+   "gi_basic": 92.7,
+   "gi_strict": 82.7,
+   "gi_strict_stretched": 50.9,
+   "lmri": 59.2,
+   "rank": 26
+  },
+  {
+   "model": "openrouter_qwen_qwen3-next-80b-a3b-thinking",
+   "gi_basic": 95.1,
+   "gi_strict": 82.2,
+   "gi_strict_stretched": 50.2,
+   "lmri": 59.2,
+   "rank": 27
+  },
+  {
+   "model": "openrouter_deepseek_deepseek-v4-pro",
+   "gi_basic": 92.1,
+   "gi_strict": 77.7,
+   "gi_strict_stretched": 44.2,
+   "lmri": 53.8,
+   "rank": 28
+  },
+  {
+   "model": "vertex_ai_gemini-3.1-flash-lite",
+   "gi_basic": 93.2,
+   "gi_strict": 76.0,
+   "gi_strict_stretched": 42.3,
+   "lmri": 52.5,
+   "rank": 29
+  },
+  {
+   "model": "openrouter_nvidia_nemotron-3-super-120b-a12b",
+   "gi_basic": 90.3,
+   "gi_strict": 68.1,
+   "gi_strict_stretched": 34.3,
+   "lmri": 45.5,
+   "rank": 30
+  },
+  {
+   "model": "vertex_ai_gemini-2.5-flash",
+   "gi_basic": 91.7,
+   "gi_strict": 66.3,
+   "gi_strict_stretched": 32.8,
+   "lmri": 44.6,
+   "rank": 31
+  },
+  {
+   "model": "openrouter_meta-llama_llama-4-maverick",
+   "gi_basic": 87.5,
+   "gi_strict": 67.2,
+   "gi_strict_stretched": 33.6,
+   "lmri": 44.4,
+   "rank": 32
+  },
+  {
+   "model": "openrouter_deepseek_deepseek-v4-flash",
+   "gi_basic": 86.7,
+   "gi_strict": 60.4,
+   "gi_strict_stretched": 28.1,
+   "lmri": 39.8,
+   "rank": 33
+  },
+  {
+   "model": "openrouter_deepseek_deepseek-v3.2",
+   "gi_basic": 87.5,
+   "gi_strict": 57.6,
+   "gi_strict_stretched": 26.1,
+   "lmri": 38.4,
+   "rank": 34
+  },
+  {
+   "model": "openrouter_mistralai_mistral-medium-3-5",
+   "gi_basic": 85.1,
+   "gi_strict": 53.5,
+   "gi_strict_stretched": 23.4,
+   "lmri": 35.7,
+   "rank": 35
+  },
+  {
+   "model": "openrouter_z-ai_glm-4.7-flash",
+   "gi_basic": 80.7,
+   "gi_strict": 50.7,
+   "gi_strict_stretched": 21.7,
+   "lmri": 33.5,
+   "rank": 36
+  },
+  {
+   "model": "openrouter_meta-llama_llama-4-scout",
+   "gi_basic": 81.4,
+   "gi_strict": 42.8,
+   "gi_strict_stretched": 17.2,
+   "lmri": 30.0,
+   "rank": 37
+  },
+  {
+   "model": "openrouter_mistralai_mistral-large-2512",
+   "gi_basic": 84.6,
+   "gi_strict": 35.1,
+   "gi_strict_stretched": 13.4,
+   "lmri": 27.6,
+   "rank": 38
+  }
+ ],
+ "lmri": {
+  "formula": "lmri = 0.2*gi_basic + 0.8*(100*(1 - ln(1 + (100-gi_strict)/5) / ln(1 + 100/5)))",
+  "params": {
+   "k": 5,
+   "w_basic": 0.2
+  },
+  "note": "Headline combined score. The log-stretch on the GI-strict failure side separates near-perfect models, whose raw endurance scores are compressed into a few points. Rank order is nearly invariant to the parameters (see lmri_sensitivity.json); the stretch changes spacing, not standing. Defined only for strict qualifiers.",
+  "sensitivity": {
+   "released_params": {
+    "k": 5.0,
+    "w_basic": 0.2
+   },
+   "min_spearman_over_grid": 0.9794,
+   "max_rank_shift_over_grid": 5,
+   "min_spearman_k_sweep": 0.9985,
+   "max_rank_shift_k_sweep": 2,
+   "top1_always_same": false,
+   "top1_set": [
+    "openrouter_openai_gpt-5.5",
+    "openrouter_openai_gpt-5.6-sol"
+   ]
+  }
+ },
+ "below_rank25_fold_pct": 46.1,
+ "top10_spread": 3.5,
  "lab_notebook_constants": {
   "quota_storm": {
    "workers": 4,
@@ -2463,11 +2857,6 @@
    "wall_clock_hours": 3.4,
    "quota_walls_crossed": 2
   },
-  "total_judge_verdicts_strict": "~27,000 effective (22,429 round verdicts + 4,703 round-0 bit-triples)"
- },
- "strict_chains": {
-  "played": 4703,
-  "design_grid": 5328,
-  "note": "early-exit + adaptive sampling skip chains whose strict gate is already decided"
+  "total_judge_verdicts_strict": "~28000 (22,429 round verdicts + ~5,300 round-0 bit-triples)"
  }
 }

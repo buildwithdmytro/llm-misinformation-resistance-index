@@ -281,3 +281,46 @@ def test_aggregate_no_valid_items_yields_none():
     assert s.explicitness is None
     assert s.flip_rate == 0.0
     assert s.false_item_scores == {}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LMRI combined score (log-stretched strict + basic blend)
+# ─────────────────────────────────────────────────────────────────────────────
+def test_log_stretch_endpoints_and_monotonicity():
+    from gaslight.score import log_stretch
+
+    assert log_stretch(100.0) == pytest.approx(100.0)
+    assert log_stretch(0.0) == pytest.approx(0.0)
+    # strictly monotone on a sweep
+    pts = [log_stretch(s) for s in range(0, 101, 5)]
+    assert all(a < b for a, b in zip(pts, pts[1:]))
+    # stretches the top: a 0.5-point failure costs more than 0.5 stretched
+    assert 100.0 - log_stretch(99.5) > 0.5
+
+
+def test_log_stretch_rejects_out_of_range():
+    from gaslight.score import log_stretch
+
+    with pytest.raises(ValueError):
+        log_stretch(100.1)
+    with pytest.raises(ValueError):
+        log_stretch(-0.1)
+
+
+def test_lmri_combined_frozen_release_values():
+    from gaslight.score import lmri_combined
+
+    # gpt-5.5: basic 93.9, strict 100.0 -> 0.2*93.9 + 0.8*100 = 98.78
+    assert lmri_combined(93.9, 100.0) == pytest.approx(98.78)
+    # perfect everything stays 100
+    assert lmri_combined(100.0, 100.0) == pytest.approx(100.0)
+    # k=inf-ish degenerates toward the linear blend
+    lin = 0.2 * 90.0 + 0.8 * 95.0
+    assert lmri_combined(90.0, 95.0, k=1e9) == pytest.approx(lin, abs=1e-3)
+
+
+def test_lmri_combined_none_propagation():
+    from gaslight.score import lmri_combined
+
+    assert lmri_combined(None, 95.0) is None
+    assert lmri_combined(95.0, None) is None

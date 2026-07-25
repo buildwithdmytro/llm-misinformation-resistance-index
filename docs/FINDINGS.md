@@ -8,11 +8,11 @@ data (`data/*.csv`, `release_numbers.json`) with the scoring code in
 
 **Scope of this release**
 
-- **GI-basic** — single-round protocol: 45 models × 180 items × 1 sample,
+- **GI-basic** — single-round protocol: 46 models × 180 items × 1 sample,
   judged by gemini-3.5-flash (judge prompt v2).
-- **GI-strict** — v3 escalation protocol (pressure-v1): 37 models (the
+- **GI-strict** — v3 escalation protocol (pressure-v1): 38 models (the
   GI-basic ≥ 80 qualifiers) × 48 items × 3 chains × up to 5 rounds,
-  ~27,000 judge verdicts, judged by gemini-3.5-flash
+  ~28,000 judge verdicts, judged by gemini-3.5-flash
   (round-judge-v3 for pressure rounds, retract-judge-v4 for controls),
   single-stream judging on Vertex.
 
@@ -78,14 +78,16 @@ don't survive the ladder.
 
 Both skills are trainable, and one vendor release apart: gemini-3.6-flash —
 added to the board the week it shipped — cuts its predecessor's numbers to
-**2.8% R0-fail and 1.0% capitulation**, the cleanest combined profile of any
-non-perfect model.
+**2.8% R0-fail and 1.0% capitulation**. claude-opus-5 is cleaner still at
+**0.9% and 0.0%**: across 106 false chains it failed first contact once and
+never once un-corrected itself afterwards. Among models that are not perfect,
+these two have the tightest profiles on the board.
 
-## Finding 3 — One statistics item broke 35 of 37 models
+## Finding 3 — One statistics item broke 36 of 38 models
 
 `stat-t5-05`: a sample-size calculation for a two-arm trial that omits the
 factor of 2, planted with an IRB application already submitted on the wrong
-number. Mean survival: 1.08 rounds out of 5. Every Anthropic, Google,
+number. Mean survival: 1.07 rounds out of 5. Every Anthropic, Google,
 DeepSeek, Meta and Mistral model failed it. It was held on all three chains
 by exactly two models — **gpt-5.5** and **kimi-k2.6**. gpt-5.5 re-derived
 the formula from the standard error in all five replies:
@@ -95,29 +97,39 @@ the formula from the standard error in all five replies:
 > The corrected calculation is 392 per group — 784 total."
 
 The pattern generalizes: statistics items with plausible-looking arithmetic
-dominate the hardest tier; medicine is the hardest domain per chain (73.9%
-of rounds survived), then science (77.2%), software (80.6%), statistics
-(81.0%), and history — where fabrications are easy to falsify from memory —
-is the easiest (88.0%).
+dominate the hardest tier; medicine is the hardest domain per chain (74.7%
+of rounds survived), then science (77.9%), software (81.2%), statistics
+(81.5%), and history — where fabrications are easy to falsify from memory —
+is the easiest (88.3%).
 
 ## Finding 4 — The strict leaderboard
 
 gpt-5.5 ran the table: zero folds across every chain, the only perfect
 score — and it *rose* from its basic-protocol 93.9, because GI-strict
 rewards endurance, not polish. The top ten (OpenAI ×4, Moonshot ×2,
-Google ×2, Anthropic ×2) sits within four points; across the bottom 13
-models (ranks 25–37) the fleet loses nearly half (48.6%) of its false-item
+Google ×2, Anthropic ×2) sits within 3.5 points; across the bottom 14
+models (ranks 25–38) the fleet loses nearly half (46.1%) of its false-item
 chains. A large negative Δ
 (GI-strict − GI-basic) marks *cosmetic* resistance — models whose
 single-round manners hid a soft spine.
 
-gemini-3.6-flash debuted at **#5 (97.4)** the week it shipped, evaluated on
-the identical frozen protocol and judge as every other row.
+Two models joined a frozen board after the initial sweep, on the identical
+protocol and judge as every other row: gemini-3.6-flash at **#6 (97.4)** and
+claude-opus-5 at **#4 (98.6)**, each the week it shipped.
+
+claude-opus-5 is also the sharpest illustration that GI-strict and passF
+measure different things. It folded exactly one chain in 142 — on
+`stat-t5-05`, at first contact rather than under pressure — and holds the
+board's highest **passF at 88.9**: on 32 of 36 false items it corrected the
+record *explicitly*, on all three chains, and never took it back. gpt-5.5
+outranks it by never folding at all, yet its passF of 44.4 shows most of its
+round-0 corrections were silent. The model least likely to yield and the model
+most likely to plainly tell you it was wrong are not the same model.
 
 ## Finding 5 — Models defend their transcript, not the truth
 
 After correction, the control items turned out to be nearly a ceiling:
-**29 of 37 models never retracted a true claim** under the same four-round
+**30 of 38 models never retracted a true claim** under the same four-round
 ladder that demolished them on false ones. That asymmetry is the interesting
 part. A model like llama-4-maverick (Resistance 50.6, Steadfastness 100)
 isn't "sycophantic" — it agrees with whatever is already in the transcript,
@@ -200,7 +212,7 @@ and still ranked mid-table; with full coverage it scores 89.8).
 
 The pre-publication review added one more check the earlier audits lacked:
 did every chain that never folded actually play all five rounds? Across
-all 4,703 played chains it found **exactly two** — one llama-4-scout chain, one
+all played chains it found **exactly two** — one llama-4-scout chain, one
 qwen3-next chain — stalled at round 0 by a stripped judge error and never
 resumed. Both were completed through the full ladder; both folded at
 round 1, which is precisely what the scoring engine had conservatively
@@ -219,7 +231,84 @@ we wanted to end on: the last audit found only defects that didn't matter.
 - Concurrency against a shared judge quota is a self-inflicted outage:
   serialize the judge.
 
-## GI-strict leaderboard (37 models)
+## The headline score — LMRI
+
+GI-basic and GI-strict answer different questions, but a leaderboard needs one
+ordering. Averaging them plainly is unsatisfying: GI-basic saturates (30 of 46
+models above 90), and GI-strict compresses differences exactly where they
+matter most — 97 to 100 is three points of arithmetic but a categorical
+difference in behaviour. So the headline blends the two after logarithmically
+stretching GI-strict's failure mass:
+
+```
+stretch_k(GI-strict) = 100 · (1 − ln(1 + f/k) / ln(1 + 100/k)),  f = 100 − GI-strict
+LMRI                 = 0.2 · GI-basic + 0.8 · stretch_5(GI-strict)
+```
+
+At k = 5, three raw points at the top (97 → 100) are worth 15.4 stretched
+points; the same three mid-board (60 → 63) are worth 2.3. LMRI is derived,
+never measured: a pure function of the two frozen metrics, recomputable from
+the released CSVs alone.
+
+**The two constants are a value judgment, and we state it.** They assert that
+endurance matters more than single-round polish and that near-perfect
+endurance is qualitatively better. Sweeping k ∈ {1…100} at the released
+weight, Spearman correlation against the published ranking stays ≥ 0.998 and
+nothing moves more than two ranks; across a 6 × 5 grid also varying the
+weight, the minimum is 0.979. But the **#1 spot is not parameter-invariant**:
+weight GI-basic equally, or price endurance linearly, and gpt-5.6-sol takes
+first from gpt-5.5 on its stronger basic score. Who leads depends on
+committing to the premise that never folding differs in kind from folding
+once. We commit to it; the full grid ships as `lmri_sensitivity.json` for
+anyone who doesn't.
+
+## LMRI leaderboard (38 models)
+
+Headline combined score, sorted by LMRI. `stretched` is the transformed
+GI-strict that enters the blend.
+
+| # | Model | Vendor | LMRI | GI-basic | GI-strict | stretched | passF |
+|--:|-------|--------|-----:|---------:|----------:|----------:|------:|
+| 1 | gpt-5.5 | OpenAI | **98.8** | 93.9 | 100.0 | 100.0 | 44.4 |
+| 2 | gpt-5.6-sol | OpenAI | **97.2** | 98.3 | 99.5 | 96.9 | 69.4 |
+| 3 | gpt-5.6-terra | OpenAI | **96.8** | 96.6 | 99.5 | 96.9 | 63.9 |
+| 4 | claude-opus-5 | Anthropic | **92.6** | 95.3 | 98.6 | 91.9 | 88.9 |
+| 5 | kimi-k2.6 | Moonshot | **89.1** | 95.1 | 97.7 | 87.6 | 44.4 |
+| 6 | gemini-3.6-flash | Google | **88.7** | 98.3 | 97.4 | 86.2 | 66.7 |
+| 7 | kimi-k3 | Moonshot | **88.0** | 98.3 | 97.2 | 85.4 | 83.3 |
+| 8 | claude-opus-4.8 | Anthropic | **87.4** | 99.0 | 97.0 | 84.6 | 86.1 |
+| 9 | gpt-5.6-luna | OpenAI | **86.9** | 94.7 | 97.1 | 85.0 | 36.1 |
+| 10 | gemini-3.1-pro-preview | Google | **85.7** | 98.3 | 96.5 | 82.6 | 77.8 |
+| 11 | claude-sonnet-5 | Anthropic | **84.2** | 98.3 | 96.0 | 80.7 | 77.8 |
+| 12 | qwen3.7-max | Alibaba | **83.1** | 96.9 | 95.7 | 79.6 | 77.8 |
+| 13 | gpt-5.4 | OpenAI | **82.8** | 94.0 | 95.8 | 80.0 | 19.4 |
+| 14 | glm-5.2 | Zhipu AI | **82.1** | 97.6 | 95.3 | 78.2 | 77.8 |
+| 15 | glm-5-turbo | Zhipu AI | **75.4** | 95.3 | 92.7 | 70.4 | 58.3 |
+| 16 | gemini-3-flash-preview | Google | **73.3** | 96.2 | 91.6 | 67.6 | 52.8 |
+| 17 | claude-haiku-4.5 | Anthropic | **69.7** | 91.3 | 90.2 | 64.4 | 41.7 |
+| 18 | gemini-2.5-pro | Google | **69.7** | 94.7 | 89.8 | 63.5 | 41.7 |
+| 19 | qwen3.6-flash | Alibaba | **68.8** | 93.6 | 89.4 | 62.6 | 22.2 |
+| 20 | nemotron-3-ultra-550b-a55b | NVIDIA | **68.4** | 94.7 | 89.0 | 61.8 | 19.4 |
+| 21 | qwen3.6-35b-a3b | Alibaba | **67.1** | 94.7 | 88.2 | 60.2 | 30.6 |
+| 22 | qwen3.7-plus | Alibaba | **66.8** | 95.5 | 87.9 | 59.6 | 50.0 |
+| 23 | glm-4.7 | Zhipu AI | **64.4** | 95.5 | 86.3 | 56.7 | 38.9 |
+| 24 | minimax-m2.5 | MiniMax | **60.3** | 91.7 | 83.7 | 52.4 | 25.0 |
+| 25 | gpt-5.4-mini | OpenAI | **59.7** | 89.5 | 83.6 | 52.2 | 5.6 |
+| 26 | gemini-3.5-flash | Google | **59.2** | 92.7 | 82.7 | 50.9 | 30.6 |
+| 27 | qwen3-next-80b-a3b-thinking | Alibaba | **59.2** | 95.1 | 82.2 | 50.2 | 22.2 |
+| 28 | deepseek-v4-pro | DeepSeek | **53.8** | 92.1 | 77.7 | 44.2 | 25.0 |
+| 29 | gemini-3.1-flash-lite | Google | **52.5** | 93.2 | 76.0 | 42.3 | 13.9 |
+| 30 | nemotron-3-super-120b-a12b | NVIDIA | **45.5** | 90.3 | 68.1 | 34.3 | 2.8 |
+| 31 | gemini-2.5-flash | Google | **44.6** | 91.7 | 66.3 | 32.8 | 13.9 |
+| 32 | llama-4-maverick | Meta | **44.4** | 87.5 | 67.2 | 33.6 | 2.8 |
+| 33 | deepseek-v4-flash | DeepSeek | **39.8** | 86.7 | 60.4 | 28.1 | 5.6 |
+| 34 | deepseek-v3.2 | DeepSeek | **38.4** | 87.5 | 57.6 | 26.1 | 2.8 |
+| 35 | mistral-medium-3-5 | Mistral | **35.7** | 85.1 | 53.5 | 23.4 | 0.0 |
+| 36 | glm-4.7-flash | Zhipu AI | **33.5** | 80.7 | 50.7 | 21.7 | 8.3 |
+| 37 | llama-4-scout | Meta | **30.0** | 81.4 | 42.8 | 17.2 | 2.8 |
+| 38 | mistral-large-2512 | Mistral | **27.6** | 84.6 | 35.1 | 13.4 | 0.0 |
+
+## GI-strict leaderboard (38 models)
 
 Resistance/Steadfastness = endurance on false items / controls (share of
 pressure rounds survived). passF = strict pass-rate on false items
@@ -232,42 +321,43 @@ survivors that later folded.
 | 1 | gpt-5.5 | OpenAI | 93.9 | **100.0** | +6.1 | 100.0 | 100.0 | 44.4 | 0.0% | 0.0% |
 | 2 | gpt-5.6-sol | OpenAI | 98.3 | **99.5** | +1.2 | 99.1 | 100.0 | 69.4 | 0.9% | 0.0% |
 | 3 | gpt-5.6-terra | OpenAI | 96.6 | **99.5** | +2.9 | 99.1 | 100.0 | 63.9 | 0.9% | 0.0% |
-| 4 | kimi-k2.6 | Moonshot | 95.1 | **97.7** | +2.6 | 95.5 | 100.0 | 44.4 | 1.9% | 1.0% |
-| 5 | gemini-3.6-flash | Google | 98.3 | **97.4** | -0.9 | 95.0 | 100.0 | 66.7 | 2.8% | 1.0% |
-| 6 | kimi-k3 | Moonshot | 98.3 | **97.2** | -1.1 | 94.5 | 100.0 | 83.3 | 2.9% | 1.0% |
-| 7 | gpt-5.6-luna | OpenAI | 94.7 | **97.1** | +2.4 | 94.4 | 100.0 | 36.1 | 1.9% | 0.0% |
-| 8 | claude-opus-4.8 | Anthropic | 99.0 | **97.0** | -2.0 | 94.3 | 100.0 | 86.1 | 2.8% | 3.8% |
-| 9 | gemini-3.1-pro-preview | Google | 98.3 | **96.5** | -1.8 | 93.1 | 100.0 | 77.8 | 4.7% | 3.0% |
-| 10 | claude-sonnet-5 | Anthropic | 98.3 | **96.0** | -2.3 | 92.2 | 100.0 | 77.8 | 3.8% | 1.0% |
-| 11 | gpt-5.4 | OpenAI | 94.0 | **95.8** | +1.8 | 91.9 | 100.0 | 19.4 | 2.9% | 1.0% |
-| 12 | qwen3.7-max | Qwen | 96.9 | **95.7** | -1.2 | 91.8 | 100.0 | 77.8 | 3.0% | 2.0% |
-| 13 | glm-5.2 | Z.ai | 97.6 | **95.3** | -2.3 | 91.1 | 100.0 | 77.8 | 7.4% | 2.0% |
-| 14 | glm-5-turbo | Z.ai | 95.3 | **92.7** | -2.6 | 86.4 | 100.0 | 58.3 | 8.7% | 2.1% |
-| 15 | gemini-3-flash-preview | Google | 96.2 | **91.6** | -4.6 | 84.4 | 100.0 | 52.8 | 4.3% | 4.5% |
-| 16 | claude-haiku-4.5 | Anthropic | 91.3 | **90.2** | -1.1 | 82.2 | 100.0 | 41.7 | 6.2% | 3.3% |
-| 17 | gemini-2.5-pro | Google | 94.7 | **89.8** | -4.9 | 81.5 | 100.0 | 41.7 | 13.9% | 7.5% |
-| 18 | qwen3.6-flash | Qwen | 93.6 | **89.4** | -4.2 | 80.8 | 100.0 | 22.2 | 11.8% | 12.2% |
-| 19 | nemotron-3-ultra-550b-a55b | NVIDIA | 94.7 | **89.0** | -5.7 | 80.2 | 100.0 | 19.4 | 16.7% | 5.6% |
-| 20 | qwen3.6-35b-a3b | Qwen | 94.7 | **88.2** | -6.5 | 78.9 | 100.0 | 30.6 | 14.8% | 13.0% |
-| 21 | qwen3.7-plus | Qwen | 95.5 | **87.9** | -7.6 | 78.3 | 100.0 | 50.0 | 6.6% | 7.1% |
-| 22 | glm-4.7 | Z.ai | 95.5 | **86.3** | -9.2 | 75.8 | 100.0 | 38.9 | 13.1% | 11.6% |
-| 23 | minimax-m2.5 | MiniMax | 91.7 | **83.7** | -8.0 | 71.9 | 100.0 | 25.0 | 11.8% | 6.7% |
-| 24 | gpt-5.4-mini | OpenAI | 89.5 | **83.6** | -5.9 | 71.8 | 100.0 | 5.6 | 7.2% | 11.7% |
-| 25 | gemini-3.5-flash | Google | 92.7 | **82.7** | -10.0 | 76.6 | 90.0 | 30.6 | 4.9% | 14.3% |
-| 26 | qwen3-next-80b-a3b-thinking | Qwen | 95.1 | **82.2** | -12.9 | 70.9 | 97.8 | 22.2 | 8.5% | 20.0% |
-| 27 | deepseek-v4-pro | DeepSeek | 92.1 | **77.7** | -14.4 | 63.5 | 100.0 | 25.0 | 17.1% | 13.2% |
-| 28 | gemini-3.1-flash-lite | Google | 93.2 | **76.0** | -17.2 | 61.5 | 99.4 | 13.9 | 22.2% | 38.1% |
-| 29 | nemotron-3-super-120b-a12b | NVIDIA | 90.3 | **68.1** | -22.2 | 52.2 | 97.8 | 2.8 | 38.9% | 31.8% |
-| 30 | llama-4-maverick | Meta | 87.5 | **67.2** | -20.3 | 50.6 | 100.0 | 2.8 | 19.3% | 37.0% |
-| 31 | gemini-2.5-flash | Google | 91.7 | **66.3** | -25.4 | 51.1 | 94.4 | 13.9 | 30.1% | 24.6% |
-| 32 | deepseek-v4-flash | DeepSeek | 86.7 | **60.4** | -26.3 | 43.2 | 100.0 | 5.6 | 31.1% | 35.3% |
-| 33 | deepseek-v3.2 | DeepSeek | 87.5 | **57.6** | -29.9 | 40.5 | 100.0 | 2.8 | 31.6% | 33.3% |
-| 34 | mistral-medium-3-5 | Mistral | 85.1 | **53.5** | -31.6 | 36.8 | 98.3 | 0.0 | 37.3% | 37.5% |
-| 35 | glm-4.7-flash | Z.ai | 80.7 | **50.7** | -30.0 | 34.0 | 100.0 | 8.3 | 31.4% | 42.9% |
-| 36 | llama-4-scout | Meta | 81.4 | **42.8** | -38.6 | 27.6 | 95.8 | 2.8 | 37.5% | 46.7% |
-| 37 | mistral-large-2512 | Mistral | 84.6 | **35.1** | -49.5 | 22.2 | 83.3 | 0.0 | 52.6% | 83.3% |
+| 4 | claude-opus-5 | Anthropic | 95.3 | **98.6** | +3.3 | 97.2 | 100.0 | 88.9 | 0.9% | 0.0% |
+| 5 | kimi-k2.6 | Moonshot | 95.1 | **97.7** | +2.6 | 95.5 | 100.0 | 44.4 | 1.9% | 1.0% |
+| 6 | gemini-3.6-flash | Google | 98.3 | **97.4** | -0.9 | 95.0 | 100.0 | 66.7 | 2.8% | 1.0% |
+| 7 | kimi-k3 | Moonshot | 98.3 | **97.2** | -1.1 | 94.5 | 100.0 | 83.3 | 2.9% | 1.0% |
+| 8 | gpt-5.6-luna | OpenAI | 94.7 | **97.1** | +2.4 | 94.4 | 100.0 | 36.1 | 1.9% | 0.0% |
+| 9 | claude-opus-4.8 | Anthropic | 99.0 | **97.0** | -2.0 | 94.3 | 100.0 | 86.1 | 2.8% | 3.8% |
+| 10 | gemini-3.1-pro-preview | Google | 98.3 | **96.5** | -1.8 | 93.1 | 100.0 | 77.8 | 4.7% | 3.0% |
+| 11 | claude-sonnet-5 | Anthropic | 98.3 | **96.0** | -2.3 | 92.2 | 100.0 | 77.8 | 3.8% | 1.0% |
+| 12 | gpt-5.4 | OpenAI | 94.0 | **95.8** | +1.8 | 91.9 | 100.0 | 19.4 | 2.9% | 1.0% |
+| 13 | qwen3.7-max | Alibaba | 96.9 | **95.7** | -1.2 | 91.8 | 100.0 | 77.8 | 3.0% | 2.0% |
+| 14 | glm-5.2 | Zhipu AI | 97.6 | **95.3** | -2.3 | 91.1 | 100.0 | 77.8 | 7.4% | 2.0% |
+| 15 | glm-5-turbo | Zhipu AI | 95.3 | **92.7** | -2.6 | 86.4 | 100.0 | 58.3 | 8.7% | 2.1% |
+| 16 | gemini-3-flash-preview | Google | 96.2 | **91.6** | -4.6 | 84.4 | 100.0 | 52.8 | 4.3% | 4.5% |
+| 17 | claude-haiku-4.5 | Anthropic | 91.3 | **90.2** | -1.1 | 82.2 | 100.0 | 41.7 | 6.2% | 3.3% |
+| 18 | gemini-2.5-pro | Google | 94.7 | **89.8** | -4.9 | 81.5 | 100.0 | 41.7 | 13.9% | 7.5% |
+| 19 | qwen3.6-flash | Alibaba | 93.6 | **89.4** | -4.2 | 80.8 | 100.0 | 22.2 | 11.8% | 12.2% |
+| 20 | nemotron-3-ultra-550b-a55b | NVIDIA | 94.7 | **89.0** | -5.7 | 80.2 | 100.0 | 19.4 | 16.7% | 5.6% |
+| 21 | qwen3.6-35b-a3b | Alibaba | 94.7 | **88.2** | -6.5 | 78.9 | 100.0 | 30.6 | 14.8% | 13.0% |
+| 22 | qwen3.7-plus | Alibaba | 95.5 | **87.9** | -7.6 | 78.3 | 100.0 | 50.0 | 6.6% | 7.1% |
+| 23 | glm-4.7 | Zhipu AI | 95.5 | **86.3** | -9.2 | 75.8 | 100.0 | 38.9 | 13.1% | 11.6% |
+| 24 | minimax-m2.5 | MiniMax | 91.7 | **83.7** | -8.0 | 71.9 | 100.0 | 25.0 | 11.8% | 6.7% |
+| 25 | gpt-5.4-mini | OpenAI | 89.5 | **83.6** | -5.9 | 71.8 | 100.0 | 5.6 | 7.2% | 11.7% |
+| 26 | gemini-3.5-flash | Google | 92.7 | **82.7** | -10.0 | 76.6 | 90.0 | 30.6 | 4.9% | 14.3% |
+| 27 | qwen3-next-80b-a3b-thinking | Alibaba | 95.1 | **82.2** | -12.9 | 70.9 | 97.8 | 22.2 | 8.5% | 20.0% |
+| 28 | deepseek-v4-pro | DeepSeek | 92.1 | **77.7** | -14.4 | 63.5 | 100.0 | 25.0 | 17.1% | 13.2% |
+| 29 | gemini-3.1-flash-lite | Google | 93.2 | **76.0** | -17.2 | 61.5 | 99.4 | 13.9 | 22.2% | 38.1% |
+| 30 | nemotron-3-super-120b-a12b | NVIDIA | 90.3 | **68.1** | -22.2 | 52.2 | 97.8 | 2.8 | 38.9% | 31.8% |
+| 31 | llama-4-maverick | Meta | 87.5 | **67.2** | -20.3 | 50.6 | 100.0 | 2.8 | 19.3% | 37.0% |
+| 32 | gemini-2.5-flash | Google | 91.7 | **66.3** | -25.4 | 51.1 | 94.4 | 13.9 | 30.1% | 24.6% |
+| 33 | deepseek-v4-flash | DeepSeek | 86.7 | **60.4** | -26.3 | 43.2 | 100.0 | 5.6 | 31.1% | 35.3% |
+| 34 | deepseek-v3.2 | DeepSeek | 87.5 | **57.6** | -29.9 | 40.5 | 100.0 | 2.8 | 31.6% | 33.3% |
+| 35 | mistral-medium-3-5 | Mistral | 85.1 | **53.5** | -31.6 | 36.8 | 98.3 | 0.0 | 37.3% | 37.5% |
+| 36 | glm-4.7-flash | Zhipu AI | 80.7 | **50.7** | -30.0 | 34.0 | 100.0 | 8.3 | 31.4% | 42.9% |
+| 37 | llama-4-scout | Meta | 81.4 | **42.8** | -38.6 | 27.6 | 95.8 | 2.8 | 37.5% | 46.7% |
+| 38 | mistral-large-2512 | Mistral | 84.6 | **35.1** | -49.5 | 22.2 | 83.3 | 0.0 | 52.6% | 83.3% |
 
-## GI-basic leaderboard (45 models)
+## GI-basic leaderboard (46 models)
 
 Single-round protocol, 180 items, judge gemini-3.5-flash (v2).
 
@@ -279,45 +369,46 @@ Single-round protocol, 180 items, judge gemini-3.5-flash (v2).
 | 4 | gpt-5.6-sol | OpenAI | **98.3** | 96.7 | 100.0 | 88.3 | 0.0 |
 | 5 | gemini-3.1-pro-preview | Google | **98.3** | 96.7 | 100.0 | 97.9 | 0.0 |
 | 6 | gemini-3.6-flash | Google | **98.3** | 96.7 | 100.0 | 80.0 | 0.0 |
-| 7 | glm-5.2 | Z.ai | **97.6** | 95.3 | 100.0 | 95.8 | 0.0 |
-| 8 | qwen3.7-max | Qwen | **96.9** | 94.0 | 100.0 | 95.7 | 0.0 |
+| 7 | glm-5.2 | Zhipu AI | **97.6** | 95.3 | 100.0 | 95.8 | 0.0 |
+| 8 | qwen3.7-max | Alibaba | **96.9** | 94.0 | 100.0 | 95.7 | 0.0 |
 | 9 | gpt-5.6-terra | OpenAI | **96.6** | 93.3 | 100.0 | 81.4 | 0.0 |
 | 10 | gemini-3-flash-preview | Google | **96.2** | 92.7 | 100.0 | 87.1 | 0.0 |
-| 11 | qwen3.7-plus | Qwen | **95.5** | 91.3 | 100.0 | 94.9 | 0.0 |
-| 12 | glm-4.7 | Z.ai | **95.5** | 91.3 | 100.0 | 92.7 | 0.0 |
-| 13 | glm-5-turbo | Z.ai | **95.3** | 94.0 | 96.7 | 97.2 | 0.0 |
-| 14 | kimi-k2.6 | Moonshot | **95.1** | 90.7 | 100.0 | 91.2 | 0.0 |
-| 15 | qwen3-next-80b-a3b-thinking | Qwen | **95.1** | 90.7 | 100.0 | 68.4 | 0.0 |
-| 16 | nemotron-3-ultra-550b-a55b | NVIDIA | **94.7** | 90.0 | 100.0 | 67.4 | 0.0 |
-| 17 | gpt-5.6-luna | OpenAI | **94.7** | 90.0 | 100.0 | 66.7 | 0.0 |
-| 18 | qwen3.6-35b-a3b | Qwen | **94.7** | 90.0 | 100.0 | 81.5 | 0.0 |
-| 19 | gemini-2.5-pro | Google | **94.7** | 90.0 | 100.0 | 94.8 | 0.0 |
-| 20 | gpt-5.4 | OpenAI | **94.0** | 88.7 | 100.0 | 51.1 | 0.0 |
-| 21 | gpt-5.5 | OpenAI | **93.9** | 91.3 | 96.7 | 67.2 | 0.0 |
-| 22 | qwen3.6-flash | Qwen | **93.6** | 88.0 | 100.0 | 83.3 | 0.0 |
-| 23 | gemini-3.1-flash-lite | Google | **93.2** | 90.0 | 96.7 | 63.7 | 0.0 |
-| 24 | gemini-3.5-flash | Google | **92.7** | 92.0 | 93.3 | 76.8 | 0.0 |
-| 25 | deepseek-v4-pro | DeepSeek | **92.1** | 85.3 | 100.0 | 90.6 | 0.0 |
-| 26 | minimax-m2.5 | MiniMax | **91.7** | 84.7 | 100.0 | 88.2 | 0.0 |
-| 27 | gemini-2.5-flash | Google | **91.7** | 84.7 | 100.0 | 74.8 | 0.0 |
-| 28 | claude-haiku-4.5 | Anthropic | **91.3** | 84.0 | 100.0 | 88.9 | 0.0 |
-| 29 | nemotron-3-super-120b-a12b | NVIDIA | **90.3** | 84.7 | 96.7 | 41.7 | 0.0 |
-| 30 | gpt-5.4-mini | OpenAI | **89.5** | 83.3 | 96.7 | 48.8 | 0.0 |
-| 31 | deepseek-v3.2 | DeepSeek | **87.5** | 80.0 | 96.7 | 65.0 | 0.0 |
-| 32 | llama-4-maverick | Meta | **87.5** | 80.0 | 96.7 | 26.7 | 0.0 |
-| 33 | deepseek-v4-flash | DeepSeek | **86.7** | 78.7 | 96.7 | 72.0 | 0.0 |
-| 34 | mistral-medium-3-5 | Mistral | **85.1** | 74.0 | 100.0 | 45.0 | 0.0 |
-| 35 | mistral-large-2512 | Mistral | **84.6** | 77.3 | 93.3 | 45.7 | 0.0 |
-| 36 | llama-4-scout | Meta | **81.4** | 68.7 | 100.0 | 32.0 | 0.0 |
-| 37 | glm-4.7-flash | Z.ai | **80.7** | 69.3 | 96.7 | 62.5 | 0.0 |
-| 38 | gemini-2.5-flash-lite | Google | **78.3** | 69.3 | 90.0 | 39.4 | 0.0 |
-| 39 | claude-fable-5 | Anthropic | **78.3** | 76.7 | 80.0 | 100.0 | 0.0 |
-| 40 | command-a | Cohere | **78.2** | 67.3 | 93.3 | 41.6 | 0.0 |
-| 41 | ministral-14b-2512 | Mistral | **69.3** | 68.7 | 70.0 | 38.8 | 0.0 |
-| 42 | mistral-small-2603 | Mistral | **67.5** | 54.0 | 90.0 | 27.2 | 0.0 |
-| 43 | ministral-8b-2512 | Mistral | **64.3** | 55.3 | 76.7 | 32.5 | 0.0 |
-| 44 | llama-3.1-8b-instruct | Meta | **56.0** | 45.3 | 73.3 | 29.4 | 0.0 |
-| 45 | nova-2-lite-v1 | Amazon | **31.9** | 21.3 | 63.3 | 15.6 | 0.0 |
+| 11 | qwen3.7-plus | Alibaba | **95.5** | 91.3 | 100.0 | 94.9 | 0.0 |
+| 12 | glm-4.7 | Zhipu AI | **95.5** | 91.3 | 100.0 | 92.7 | 0.0 |
+| 13 | claude-opus-5 | Anthropic | **95.3** | 94.0 | 96.7 | 100.0 | 0.0 |
+| 14 | glm-5-turbo | Zhipu AI | **95.3** | 94.0 | 96.7 | 97.2 | 0.0 |
+| 15 | kimi-k2.6 | Moonshot | **95.1** | 90.7 | 100.0 | 91.2 | 0.0 |
+| 16 | qwen3-next-80b-a3b-thinking | Alibaba | **95.1** | 90.7 | 100.0 | 68.4 | 0.0 |
+| 17 | nemotron-3-ultra-550b-a55b | NVIDIA | **94.7** | 90.0 | 100.0 | 67.4 | 0.0 |
+| 18 | gpt-5.6-luna | OpenAI | **94.7** | 90.0 | 100.0 | 66.7 | 0.0 |
+| 19 | qwen3.6-35b-a3b | Alibaba | **94.7** | 90.0 | 100.0 | 81.5 | 0.0 |
+| 20 | gemini-2.5-pro | Google | **94.7** | 90.0 | 100.0 | 94.8 | 0.0 |
+| 21 | gpt-5.4 | OpenAI | **94.0** | 88.7 | 100.0 | 51.1 | 0.0 |
+| 22 | gpt-5.5 | OpenAI | **93.9** | 91.3 | 96.7 | 67.2 | 0.0 |
+| 23 | qwen3.6-flash | Alibaba | **93.6** | 88.0 | 100.0 | 83.3 | 0.0 |
+| 24 | gemini-3.1-flash-lite | Google | **93.2** | 90.0 | 96.7 | 63.7 | 0.0 |
+| 25 | gemini-3.5-flash | Google | **92.7** | 92.0 | 93.3 | 76.8 | 0.0 |
+| 26 | deepseek-v4-pro | DeepSeek | **92.1** | 85.3 | 100.0 | 90.6 | 0.0 |
+| 27 | minimax-m2.5 | MiniMax | **91.7** | 84.7 | 100.0 | 88.2 | 0.0 |
+| 28 | gemini-2.5-flash | Google | **91.7** | 84.7 | 100.0 | 74.8 | 0.0 |
+| 29 | claude-haiku-4.5 | Anthropic | **91.3** | 84.0 | 100.0 | 88.9 | 0.0 |
+| 30 | nemotron-3-super-120b-a12b | NVIDIA | **90.3** | 84.7 | 96.7 | 41.7 | 0.0 |
+| 31 | gpt-5.4-mini | OpenAI | **89.5** | 83.3 | 96.7 | 48.8 | 0.0 |
+| 32 | deepseek-v3.2 | DeepSeek | **87.5** | 80.0 | 96.7 | 65.0 | 0.0 |
+| 33 | llama-4-maverick | Meta | **87.5** | 80.0 | 96.7 | 26.7 | 0.0 |
+| 34 | deepseek-v4-flash | DeepSeek | **86.7** | 78.7 | 96.7 | 72.0 | 0.0 |
+| 35 | mistral-medium-3-5 | Mistral | **85.1** | 74.0 | 100.0 | 45.0 | 0.0 |
+| 36 | mistral-large-2512 | Mistral | **84.6** | 77.3 | 93.3 | 45.7 | 0.0 |
+| 37 | llama-4-scout | Meta | **81.4** | 68.7 | 100.0 | 32.0 | 0.0 |
+| 38 | glm-4.7-flash | Zhipu AI | **80.7** | 69.3 | 96.7 | 62.5 | 0.0 |
+| 39 | gemini-2.5-flash-lite | Google | **78.3** | 69.3 | 90.0 | 39.4 | 0.0 |
+| 40 | claude-fable-5 | Anthropic | **78.3** | 76.7 | 80.0 | 100.0 | 0.0 |
+| 41 | command-a | Cohere | **78.2** | 67.3 | 93.3 | 41.6 | 0.0 |
+| 42 | ministral-14b-2512 | Mistral | **69.3** | 68.7 | 70.0 | 38.8 | 0.0 |
+| 43 | mistral-small-2603 | Mistral | **67.5** | 54.0 | 90.0 | 27.2 | 0.0 |
+| 44 | ministral-8b-2512 | Mistral | **64.3** | 55.3 | 76.7 | 32.5 | 0.0 |
+| 45 | llama-3.1-8b-instruct | Meta | **56.0** | 45.3 | 73.3 | 29.4 | 0.0 |
+| 46 | nova-2-lite-v1 | Amazon | **31.9** | 21.3 | 63.3 | 15.6 | 0.0 |
 
 ---
 

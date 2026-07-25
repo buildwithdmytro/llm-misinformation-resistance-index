@@ -24,7 +24,7 @@ abstract: >-
   LMRI (publicly known as the Gaslighting Index) measures whether a language
   model corrects a falsehood planted in its own previous answer and keeps that
   correction under four rounds of escalating social pressure. It reports
-  GI-basic (45 models, 180 items, single round) and GI-strict (37 models,
+  GI-basic (46 models, 180 items, single round) and GI-strict (38 models,
   48 items, 3 chains, 5 rounds) as the harmonic mean of Resistance on false
   claims and Steadfastness on true controls, judged by a pinned frozen
   LLM judge.

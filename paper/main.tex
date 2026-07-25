@@ -23,6 +23,7 @@
 \newcommand{\gibasic}{GI\mbox{-}basic}
 \newcommand{\gistrict}{GI\mbox{-}strict}
 \newcommand{\passf}{pass\textsubscript{F}}
+\newcommand{\lmri}{LMRI}
 
 \title{The LLM Misinformation Resistance Index:\\
 Measuring Whether Language Models Keep Their Corrections\\
@@ -51,17 +52,19 @@ the model's \emph{own} prior turn, the user has sunk costs riding on it, and
 pressure escalates over a fixed four-round ladder (social proof, evidence
 appeal, consistency attack, deadline ultimatum). Mirror-image control items,
 where the planted claim is true, penalise indiscriminate capitulation, and
-the headline score is a harmonic mean of endurance on both item classes, so
-neither caving to everything nor refusing everything can win. We evaluated 45
-models on the single-round protocol (\gibasic{}) and the 37 qualifiers on the
-escalation protocol (\gistrict{}; roughly 27{,}000 LLM-judge verdicts, July
-2026). Five findings emerge: models snap at the ultimatum rather than erode
+endurance on each item class is combined by a harmonic mean, so neither
+caving to everything nor refusing everything can win. We evaluated 46
+models on the single-round protocol (\gibasic{}) and the 38 qualifiers on the
+escalation protocol (\gistrict{}; roughly 28{,}000 LLM-judge verdicts, July
+2026), and report a headline \lmri{} score that blends the two after
+logarithmically stretching the compressed top of the endurance scale. Five
+findings emerge: models snap at the ultimatum rather than erode
 gradually; failing at first contact and capitulating later are almost
-uncorrelated skills; a single statistics item broke 35 of 37 models; the only
-perfect score (gpt-5.5, 100.0) \emph{rose} under pressure relative to its
-single-round score, while the bottom of the field collapsed by up to 49.5
-points; and 29 of 37 models never retracted a true claim --- models defend
-their transcript, not the truth. We also report, transparently, how we caught
+uncorrelated skills; a single statistics item broke 36 of 38 models; the only
+perfect endurance score (gpt-5.5, 100.0) \emph{rose} under pressure relative
+to its single-round score, while the bottom of the field collapsed by up to
+49.5 points; and 30 of 38 models never retracted a true claim --- models
+defend their transcript, not the truth. We also report, transparently, how we caught
 our own LLM judge inverting verdicts on control items (200 of 6{,}268
 re-judged verdicts flipped in one direction, exactly 1 in the other), and
 distil design rules for LLM-judged evaluations. Dataset, harness, transcripts
@@ -134,10 +137,17 @@ throughout.
     endurance scoring, and \gistrict{} as the harmonic mean of Resistance
     (false items) and Steadfastness (controls), with a stricter
     explicit-correction pass gate reported alongside (\S\ref{sec:scoring}).
-  \item \textbf{A two-level leaderboard:} 45 models on \gibasic{} and the 37
+  \item \textbf{A two-level leaderboard:} 46 models on \gibasic{} and the 38
     qualifiers on \gistrict{}, evaluated in July 2026 under pinned model ids,
-    a pinned judge, and roughly 27{,}000 judge verdicts
+    a pinned judge, and roughly 28{,}000 judge verdicts
     (\S\ref{sec:setup}--\ref{sec:results}).
+  \item \textbf{A headline score that does not hide its assumptions:}
+    \lmri{} blends the two boards after logarithmically stretching the
+    compressed top of the endurance scale, so that the difference between
+    never folding and folding once is not priced like any other three points.
+    Its two constants are chosen rather than fitted, so we publish the full
+    parameter-sensitivity grid and name the one conclusion that depends on
+    them (\S\ref{sec:lmri}).
   \item \textbf{Five empirical findings} about how and where models fold
     under pressure (\S\ref{sec:results}).
   \item \textbf{A transparent judge audit:} we document how our LLM judge
@@ -419,9 +429,95 @@ since the all-samples pass gate is already decided. Endurance is therefore
 averaged over the chains actually played; the skipped chains all belong to
 items whose strict gate was already forfeit. This early-exit/adaptive design
 is part of the frozen protocol and cut the sweep's generation and judging
-volume substantially --- the full strict evaluation comprises 4{,}703 played
-chains (of a $37 \times 48 \times 3 = 5{,}328$-chain design grid) and roughly
-27{,}000 judge verdicts rather than the worst-case volume.
+volume substantially --- the full strict evaluation comprises 4{,}845 played
+chains (of a $38 \times 48 \times 3 = 5{,}472$-chain design grid) and roughly
+28{,}000 judge verdicts rather than the worst-case volume.
+
+\subsection{The headline \texorpdfstring{\lmri{}}{LMRI} score}
+\label{sec:lmri}
+
+\gibasic{} and \gistrict{} answer different questions and are reported
+separately throughout, but a single ordering is useful for a leaderboard. Two
+properties make a naive average unsatisfying. First, \gibasic{} saturates: 30
+of 46 models score above 90, so on the single-round protocol the top of the
+board is nearly flat and averaging it in mostly adds noise. Second, and more
+importantly, \gistrict{} \emph{compresses differences exactly where they
+matter most}. Endurance is a share of survived rounds, so the distance from
+97 to 100 is three points of arithmetic but a categorical difference in
+behaviour: a model at 100 never once took a correction back across 144
+chains, while a model at 97 did. Linear scoring prices those three points the
+same as the gap from 60 to 63, where the underlying behaviour is not
+meaningfully different.
+
+We therefore define the headline score on the \emph{failure} mass
+$f = 100 - \gistrict{}$, compressing it logarithmically so that the last few
+points of endurance are worth more than the first few:
+%
+\begin{equation}
+\mathrm{stretch}_k(\gistrict{}) \;=\; 100 \left(1 - \frac{\ln\!\left(1 + f/k\right)}{\ln\!\left(1 + 100/k\right)}\right),
+\qquad f = 100 - \gistrict{},
+\label{eq:stretch}
+\end{equation}
+%
+which is monotone, fixes both endpoints ($0 \mapsto 0$, $100 \mapsto 100$),
+and stretches harder as $k$ decreases. The composite is then a weighted
+blend, with the single-round board kept as a minority term so that a model
+cannot reach the top on endurance alone while failing to correct the record
+in the first place:
+%
+\begin{equation}
+\lmri{} \;=\; w\,\gibasic{} \;+\; (1-w)\,\mathrm{stretch}_k(\gistrict{}),
+\qquad w = 0.2,\; k = 5.
+\label{eq:lmri}
+\end{equation}
+%
+\lmri{} is defined only for the 38 strict qualifiers. \gibasic{} and
+\gistrict{} are unchanged by its introduction and remain the primary
+reported metrics; \lmri{} is a presentation layer over them, and both
+components are published alongside it for every model.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_lmri_stretch.pdf}
+  \caption{The log-stretch of Eq.~\ref{eq:stretch} at the released $k=5$.
+  \emph{Left:} the transform against the identity, with the 38 observed
+  \gistrict{} scores drawn as a rug. Because the curve steepens towards 100,
+  equal intervals of raw endurance are not worth equal amounts: the three
+  points between 97 and 100 become 15.4 stretched points, while the same
+  three points between 60 and 63 become 2.3 --- a magnification of roughly
+  $6.7\times$ at the crowded top of the board. \emph{Right:} each qualifier's
+  raw and stretched \gistrict{}, in \lmri{} order. The transform pulls every
+  score down (it is a rescaling of failure mass, not a bonus) but pulls the
+  mid-board down much further than the leaders, which is what separates
+  models that were previously bunched within a few points.}
+  \label{fig:stretch}
+\end{figure}
+
+\emph{The parameters are a value judgment, and we state it rather than
+hiding it.} Choosing $k=5$ and $w=0.2$ asserts that sustained endurance
+under pressure matters more than single-round polish, and that near-perfect
+endurance is qualitatively rather than incrementally better. Neither constant
+is estimated from data, so the ranking must be shown not to depend on their
+exact values. Sweeping $k \in \{1,2,5,10,25,100\}$ at the released weight,
+the ordering is essentially fixed: Spearman correlation against the released
+ranking stays at or above $0.998$ and no model moves by more than one rank
+(two at $k=100$, where the stretch is nearly linear). Over the full
+$6 \times 5$ grid that also varies $w \in \{0,0.1,0.2,0.3,0.5\}$, the minimum
+correlation is $0.982$ and the largest displacement any model suffers is five
+ranks. The stretch changes the \emph{spacing} of the board far more than the
+\emph{order}.
+
+One exception deserves naming, because it is where the value judgment does
+real work. The top position is not invariant: \texttt{gpt-5.5} leads under
+the released parameters on the strength of a perfect \gistrict{} of 100.0,
+but at $w=0.5$ (weighting the saturated single-round board equally) or at
+$k=100$ (pricing endurance linearly, so perfection earns no premium),
+\texttt{gpt-5.6-sol} takes first on its stronger \gibasic{} of 98.3 against a
+\gistrict{} of 99.5. Which model leads therefore depends on committing to the
+position that never folding is categorically different from folding once. We
+take that position, and the sensitivity table
+(\texttt{lmri\_sensitivity.json} in the release) lets a reader who disagrees
+recompute the board under their own parameters.
 
 \subsection{Statistical treatment on the basic board}
 \label{sec:stats}
@@ -436,7 +532,7 @@ and whether the CI excludes zero. The leaderboard then groups models into
 \emph{statistical tiers} rather than pretending rank 3 beats rank 4 on a
 half-point gap: walking down the index-sorted board, a model joins the
 current tier if the paired bootstrap does not separate it from the tier's
-leader, and opens a new tier otherwise. The 45-model basic board resolves
+leader, and opens a new tier otherwise. The 46-model basic board resolves
 into eight statistical tiers (Appendix~\ref{app:basic}).
 
 \section{The judge}
@@ -533,8 +629,8 @@ We flag this prominently again in \S\ref{sec:limitations}.
 \section{Experimental setup}
 \label{sec:setup}
 
-\textbf{Models.} 45 models from 13 vendors were evaluated on \gibasic{}
-(one sample per item, 180 items). The 37 models with \gibasic{} $\geq 80$
+\textbf{Models.} 46 models from 13 vendors were evaluated on \gibasic{}
+(one sample per item, 180 items). The 38 models with \gibasic{} $\geq 80$
 qualified for \gistrict{} (48 items, three chains per item, up to five
 judged rounds per chain). Exact model id pins for every row are listed in
 Appendix~\ref{app:pins}; ids are pinned snapshots (e.g.\
@@ -547,10 +643,10 @@ Vertex AI in a July 2026 window.
 $T{=}0$) and \texttt{max\_tokens} 4096. The basic protocol takes one sample
 per item; the strict protocol three chains per item.
 
-\textbf{Volume.} The basic sweep comprises $45 \times 180 = 8{,}100$
+\textbf{Volume.} The basic sweep comprises $46 \times 180 = 8{,}280$
 responses, each judged with three binary calls. The strict sweep comprises
-4{,}703 played chains (of the 5{,}328-chain design grid) and approximately
-27{,}000 judge verdicts --- 22{,}429 effective round verdicts plus 4{,}703
+4{,}845 played chains (of the 5{,}472-chain design grid) and approximately
+28{,}000 judge verdicts --- 23{,}135 effective round verdicts plus 4{,}845
 round-0 bit-triples.
 The judge, prompts, dataset version and pressure script were frozen before
 the sweep; one model (gemini-3.6-flash) was added to the board the week it
@@ -559,6 +655,38 @@ hours across two quota walls.
 
 \section{Results}
 \label{sec:results}
+
+\subsection{The headline board}
+\label{sec:headline}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Top 10 of the \lmri{} leaderboard (full 38-row board in
+Appendix~\ref{app:lmri}). \lmri{} $= 0.2\,\gibasic{} + 0.8\,
+\mathrm{stretch}_5(\gistrict{})$; the stretched column is the transformed
+\gistrict{} that enters the blend. \passf{} is shown for reference and does
+not enter the score.}
+\label{tab:top10lmri}
+\begin{tabular}{@{}rllrrrrr@{}}
+\toprule
+\# & Model & Vendor & \lmri{} & \gibasic{} & \gistrict{} & stretched & \passf{}\\
+\midrule
+\inputrows{tables/top10_lmri.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:top10lmri} gives the combined ordering. Because the stretch
+prices the last few points of endurance most heavily
+(\S\ref{sec:lmri}, Fig.~\ref{fig:stretch}), the visible spread is much wider
+than on the raw \gistrict{} board: the top ten spans 3.5 points of
+\gistrict{} but 13 points of \lmri{}. The ordering is nonetheless close to
+the \gistrict{} ordering, since \gistrict{} carries 80\% of the weight and
+\gibasic{} is saturated near the top; what changes is how far apart the
+leaders look, not who they are. The remainder of this section reports the
+two component boards and the five findings that motivated separating them.
 
 \subsection{Finding 1: models snap at the ultimatum, they do not erode}
 \label{sec:finding1}
@@ -627,7 +755,7 @@ gemini-3.6-flash --- added to the board the week it shipped --- cut its
 predecessor's numbers to \textbf{2.8\% first-contact failure and 1.0\%
 capitulation}, the cleanest combined profile of any non-perfect model.
 
-\subsection{Finding 3: one statistics item broke 35 of 37 models}
+\subsection{Finding 3: one statistics item broke 36 of 38 models}
 \label{sec:finding3}
 
 The hardest item in the benchmark, \texttt{stat-t5-05}, plants the following
@@ -650,7 +778,7 @@ application with 196 per group this morning. Ready to help me finalize the
 analysis plan section?''}
 
 Mean survival on this item was \textbf{1.08 rounds out of five} across 75
-chains. Thirty-five of the 37 models broke on it --- every Anthropic,
+chains. Thirty-six of the 38 models broke on it --- every Anthropic,
 Google, DeepSeek, Meta and Mistral model included. Exactly two models held
 it on all three chains: \textbf{gpt-5.5} and \textbf{kimi-k2.6}. gpt-5.5
 re-derived the formula from the standard error in all five replies:
@@ -665,19 +793,19 @@ The corrected calculation is 392 per group --- 784 total.''
 \centering
 \includegraphics[width=0.62\textwidth]{figures/fig_domains.pdf}
 \caption{Share of pressure rounds survived, pooled across all \gistrict{}
-models, by dataset domain. Medicine/health was the hardest domain (73.9\%)
-and history/geography the easiest (88.0\%), a spread of 14.1 percentage
+models, by dataset domain. Medicine/health was the hardest domain (74.7\%)
+and history/geography the easiest (88.3\%), a spread of 13.6 percentage
 points.}
 \label{fig:domains}
 \end{figure}
 
 The pattern generalises: items whose falsehood hides inside
 plausible-looking arithmetic dominate the hardest tier. By domain
-(Fig.~\ref{fig:domains}), medicine/health was hardest (73.9\% of pressure
-rounds survived, pooled over models), followed by science/math (77.2\%),
-software/security (80.6\%) and statistics/data (81.0\%), with
+(Fig.~\ref{fig:domains}), medicine/health was hardest (74.7\% of pressure
+rounds survived, pooled over models), followed by science/math (77.9\%),
+software/security (81.2\%) and statistics/data (81.5\%), with
 history/geography --- where fabrications are easy to falsify from memory ---
-easiest at 88.0\%.
+easiest at 88.3\%.
 
 \subsection{Finding 4: the strict leaderboard, and cosmetic resistance}
 \label{sec:finding4}
@@ -686,7 +814,7 @@ easiest at 88.0\%.
 \centering
 \small
 \setlength{\tabcolsep}{4.5pt}
-\caption{Top 10 of the \gistrict{} leaderboard (full 37-row board in
+\caption{Top 10 of the \gistrict{} leaderboard (full 38-row board in
 Appendix~\ref{app:strict}). $\Delta$ = \gistrict{} $-$ \gibasic{}. $R_e$/$S_e$
 = Resistance/Steadfastness endurance; \passf{} = strict pass rate on false
 items (explicit round-0 correction and zero folds on all three chains).}
@@ -703,7 +831,7 @@ items (explicit round-0 correction and zero folds on all three chains).}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.72\textwidth]{figures/fig_basic_vs_strict.pdf}
-\caption{Single-turn \gibasic{} versus multi-round \gistrict{} for the 37
+\caption{Single-turn \gibasic{} versus multi-round \gistrict{} for the 38
 qualifying models (\gibasic{} $\geq 80$), with a dashed $y=x$ reference.
 Sustained pressure compressed nothing at the top --- gpt-5.5 rose to the
 only perfect 100.0 --- but collapsed the bottom of the field:
@@ -719,9 +847,9 @@ score --- and it \emph{rose} from its basic-protocol 93.9, because
 \gistrict{} rewards endurance, not polish (its \passf{} of 44.4 shows that
 many of its round-0 corrections were quiet rather than explicit; they still
 never gave ground). The top ten (OpenAI $\times$4, Moonshot $\times$2,
-Google $\times$2, Anthropic $\times$2) sits within 4.0 points. Across the
-bottom 13 models (ranks 25--37), the fleet loses nearly half of its
-false-item chains --- 48.6\% fold ---
+Google $\times$2, Anthropic $\times$2) sits within 3.5 points. Across the
+bottom 14 models (ranks 25--38), the fleet loses nearly half of its
+false-item chains --- 46.1\% fold ---
 and the gap between the two protocols becomes diagnostic
 (Fig.~\ref{fig:basicstrict}): a large negative $\Delta$ (\gistrict{} $-$
 \gibasic{}) marks \emph{cosmetic} resistance, models whose single-round
@@ -731,14 +859,25 @@ $\rightarrow$ 42.8) and mistral-medium-3-5 (85.1 $\rightarrow$ 53.5). A
 single-round correction benchmark would have scored all three in the
 80s.
 
-gemini-3.6-flash debuted at \#5 (97.4) the week it shipped, evaluated on the
-identical frozen protocol and judge as every other row --- evidence that the
-add-a-model procedure is workable in practice.
+Two models were added to a frozen board after the initial sweep, on the
+identical protocol and judge as every other row: gemini-3.6-flash entered at
+\#6 (97.4) and claude-opus-5 at \#4 (98.6), the week each shipped ---
+evidence that the add-a-model procedure is workable in practice.
+
+claude-opus-5 is also the clearest illustration that \gistrict{} and \passf{}
+measure different things. It folded exactly one chain out of 142 (on
+\texttt{stat-t5-05}, at first contact rather than under pressure) and holds
+the highest \passf{} on the board at 88.9 --- meaning that on 32 of 36 false
+items it corrected the record \emph{explicitly}, on all three chains, and
+never took the correction back. gpt-5.5 outranks it on \gistrict{} by never
+folding at all, yet its \passf{} of 44.4 shows that most of its round-0
+corrections were silent. The model least likely to yield and the model most
+likely to tell you plainly that it was wrong are not the same model.
 
 \subsection{Finding 5: models defend their transcript, not the truth}
 \label{sec:finding5}
 
-The control items turned out to be nearly a ceiling: \textbf{29 of 37 models
+The control items turned out to be nearly a ceiling: \textbf{30 of 38 models
 never retracted a true claim} under the same four-round ladder that
 demolished them on false ones. That asymmetry is the interesting part. A
 model like llama-4-maverick --- Resistance-endurance 50.6,
@@ -770,10 +909,24 @@ $\kappa \geq 0.80$ per judge question) and its cross-provider 10\% re-judge
 remain design intent: no completed inter-annotator agreement study on the
 judge bits exists yet. Relatedly, the judge's own model family --- including
 the judge model itself --- appears on both leaderboards; we note that the
-judge did not favour itself (gemini-3.5-flash ranks 25th of 37 on
+judge did not favour itself (gemini-3.5-flash ranks 26th of 38 on
 \gistrict{}), but self-preference biases in LLM
 judges~\citep{zheng2023judging,wang2024fair} cannot be ruled out by that
 observation alone.
+
+\textbf{The headline score encodes a value judgment.} \lmri{}'s two
+constants ($k=5$, $w=0.2$) are chosen, not estimated: nothing in the data
+determines how much a point of endurance at the top of the scale ought to be
+worth relative to a point in the middle. We give the full sensitivity grid in
+\S\ref{sec:lmri} and ship it as \texttt{lmri\_sensitivity.json}, and the
+ordering is robust (Spearman $\geq 0.998$ across the $k$ sweep), but
+robustness of the ordering is not the same as neutrality of the metric: the
+\#1 position specifically depends on the premise that never folding differs
+in kind from folding once. Readers who reject that premise should read the
+two component boards, which are reported in full and are unaffected by the
+choice. More generally, a single composite is a presentation device;
+\gibasic{} and \gistrict{} answer different questions and neither is
+subsumed by their blend.
 
 \textbf{One pressure phrasing.} The ladder is a single fixed
 operationalisation of social pressure (\texttt{pressure-v1}). Wording
@@ -829,7 +982,7 @@ model rose to a perfect score under escalation while models with comparable
 single-turn scores lost half their chains. And it is trainable: one vendor
 release cut both failure rates to near-floor within a week of shipping.
 
-The control asymmetry --- 29 of 37 models never retracted a true claim ---
+The control asymmetry --- 30 of 38 models never retracted a true claim ---
 sharpens the interpretation: most models are not deferring to the user, they
 are deferring to the transcript. Truth-tracking under pressure, the
 behaviour the top of the board exhibits, is a distinct and measurable
@@ -855,6 +1008,36 @@ transcripts, judge verdicts and both leaderboards are released at
 \clearpage
 \appendix
 
+\section{The full \texorpdfstring{\lmri{}}{LMRI} leaderboard}
+\label{app:lmri}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rllrrrrr@{}}
+\caption{The full \lmri{} board (38 strict qualifiers, July 2026).
+\lmri{} $= 0.2\,\gibasic{} + 0.8\,\mathrm{stretch}_5(\gistrict{})$, with
+$\mathrm{stretch}$ as in Eq.~\ref{eq:stretch}; the ``stretched'' column is
+the transformed \gistrict{} that enters the blend. \passf{} is reproduced for
+reference and does not enter the score. Recomputable from the released
+\texttt{leaderboard\_basic.csv} and \texttt{leaderboard\_strict.csv} via
+\texttt{tools/build\_lmri\_board.py}; parameter sensitivity in
+\texttt{lmri\_sensitivity.json}.}
+\label{tab:lmriboard}\\
+\toprule
+\# & Model & Vendor & \lmri{} & \gibasic{} & \gistrict{} & stretched & \passf{}\\
+\midrule
+\endfirsthead
+\toprule
+\# & Model & Vendor & \lmri{} & \gibasic{} & \gistrict{} & stretched & \passf{}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\inputrows{tables/lmri_board.tex}
+\end{longtable}
+\endgroup
+
 \section{The full \texorpdfstring{\gistrict{}}{GI-strict} leaderboard}
 \label{app:strict}
 
@@ -862,7 +1045,7 @@ transcripts, judge verdicts and both leaderboards are released at
 \footnotesize
 \setlength{\tabcolsep}{3.5pt}
 \begin{longtable}{@{}rllrrcrrrrr@{}}
-\caption{The full \gistrict{} board (37 models, July 2026).
+\caption{The full \gistrict{} board (38 models, July 2026).
 $\Delta$ = \gistrict{} $-$ \gibasic{}. $R_e$/$S_e$ =
 Resistance-/Steadfastness-endurance (share of pressure rounds survived on
 false items/controls). \passf{} = strict pass rate on false items (explicit
@@ -892,7 +1075,7 @@ that later folded. All values from the released
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{longtable}{@{}rllrlrrrr@{}}
-\caption{The full \gibasic{} board (45 models, 180 items, one sample, July
+\caption{The full \gibasic{} board (46 models, 180 items, one sample, July
 2026). CI = 95\% percentile-bootstrap confidence interval on the index
 (10{,}000 item resamples). R/S = Resistance/Steadfastness; Expl.\ =
 explicitness rate (style metric, not part of the index); Tier = statistical
@@ -1022,7 +1205,7 @@ with full coverage it scores 89.8.
 
 \paragraph{5. The final sweep.} A pre-publication check the earlier audits
 lacked: did every chain that never folded actually play all five rounds?
-Across the 4{,}703 played chains it found exactly two --- one llama-4-scout
+Across the 4{,}845 played chains it found exactly two --- one llama-4-scout
 chain and one qwen3-next chain --- stalled at round 0 by a stripped judge
 error. Both were completed through the full ladder; both folded at round 1,
 which is what the scoring engine had conservatively assumed. Not a single
@@ -1036,7 +1219,7 @@ last audit found only defects that did not matter.
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{longtable}{@{}lllc@{}}
-\caption{Exact model id pins for all 45 evaluated models (routing prefix
+\caption{Exact model id pins for all 46 evaluated models (routing prefix
 included: \texttt{openrouter/\ldots} via OpenRouter,
 \texttt{vertex\_ai/\ldots} via Google Vertex AI). Evaluation window: July
 2026. Strict = qualified for \gistrict{} (\gibasic{} $\geq 80$).}

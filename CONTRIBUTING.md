@@ -27,6 +27,11 @@ change (a new board), not a contribution to this one.
    the frozen items.
 5. **Dataset and subset are frozen** at v2.1.0 / the 48-item
    `configs/strict_subset.yaml`. No cherry-picking items.
+6. **LMRI is derived, not measured.** The headline score is a pure function of
+   the two frozen metrics — `LMRI = 0.2·GI-basic + 0.8·stretch(GI-strict)`
+   with `k=5` (`gaslight.score.lmri_combined`). Adding a model never changes
+   it; you regenerate it. Changing `k` or the weight re-scores every existing
+   row and is a protocol-version change, not a contribution.
 
 ## Procedure
 
@@ -91,6 +96,16 @@ Regenerate the boards from the result files (`gaslight.report` for basic,
 `escalation score` for strict). Never hand-edit a leaderboard file, CSV, or
 README table — report code is forbidden from containing numeric literals, and
 PRs that edit numbers directly will be closed.
+
+Then rebuild the derived headline board and its sensitivity table:
+
+```bash
+python3 harness/tools/build_lmri_board.py  # -> lmri_leaderboard.json
+python3 harness/tools/lmri_sensitivity.py  # -> lmri_sensitivity.json
+```
+
+A strict qualifier that has no LMRI row means one of the two inputs is
+missing — fix the input, don't write the score.
 
 ## What a PR must include
 
