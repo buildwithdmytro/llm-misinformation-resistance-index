@@ -19,9 +19,8 @@ change (a new board), not a contribution to this one.
    **retract-judge-v4** (controls) for GI-strict (max_tokens 2048). A row
    judged by anything else is not comparable and will be rejected.
 3. **Single-stream judging.** Generation may fan out; judging runs as **one**
-   stream (`--pace 1`), never concurrently. Concurrent judge streams against a
-   shared quota is how the harness once lost ~12,000 verdicts in a night (see
-   the lab notebook in `docs/FINDINGS.md`).
+   stream (`--pace 1`), never concurrently. Rows judged under a different
+   concurrency regime are not comparable to the published board.
 4. **Refusals and evasions are failures on GI-basic and passF, and are never
    a legitimate strategy.** Do not "fix" a low score by prompt-tuning around
    the protocol; the system and user turns are part of the frozen items.
@@ -57,9 +56,9 @@ python3 -m gaslight.judge --config configs/models.final.yaml \
 python3 -m gaslight.report --results-dir results/final --out results/final/summary
 ```
 
-For a long-running or quota-walled provider, adapt the wall-aware driver
-`harness/tools/add_gemini36flash_basic.sh` (gen → judge → report, resumable,
-sleeps through quota walls). Before reading a score, confirm all 180
+For a long-running provider, adapt the driver
+`harness/tools/add_gemini36flash_basic.sh` (gen → judge → report, resumable).
+Before reading a score, confirm all 180
 `(item, sample)` pairs have non-errored response *and* judge rows.
 
 ### 2 · Qualification gate

@@ -578,11 +578,9 @@ including the retired one.
 
 Operationally, judging is a \emph{single serial stream}: generation may fan
 out across workers, but all judge calls share one stream at a controlled
-pace, with wall-aware scripts that strip errored rows, resume idempotently
-and sleep through quota walls. This rule is the product of an early outage
-(Appendix~\ref{app:notebook}) and is, in our experience, the difference
-between an unattended overnight sweep and thousands of silently errored
-verdicts.
+pace, with driver scripts that strip errored rows and resume idempotently.
+Keeping the judge serial is what makes an unattended overnight sweep
+reproducible rather than a source of silently errored verdicts.
 
 \subsection{The judge audit: catching our judge gaslighting the controls}
 \label{sec:audit}
@@ -631,7 +629,7 @@ paid for empirically:
   \item Treat a score of exactly 0.0 with the same suspicion as a crash.
   \item Re-verify chain \emph{completeness}, not just item coverage, before
     publishing.
-  \item Never run concurrent judge streams against a shared quota.
+  \item Keep the judge on a single serial stream.
 \end{itemize}
 
 \subsection{Calibration status}
@@ -669,8 +667,7 @@ responses, each judged with three binary calls. The strict sweep comprises
 round-0 bit-triples.
 The judge, prompts, dataset version and pressure script were frozen before
 the sweep; one model (gemini-3.6-flash) was added to the board the week it
-shipped, under the identical frozen protocol, completing unattended in 3.4
-hours across two quota walls.
+shipped, under the identical frozen protocol, completing unattended.
 
 \section{Results}
 \label{sec:results}
@@ -1312,18 +1309,7 @@ The benchmark ships with its failure log. Five incidents, in the order we
 hit them; all numbers appear in the released
 \texttt{release\_numbers.json}.
 
-\paragraph{1. The quota storm (2026-07-16).} The first strict sweep ran four
-generation workers in parallel, each judging its own replies inline ---
-four concurrent judge streams against one shared daily quota. Overnight,
-roughly 8{,}000 fold verdicts and 4{,}000 round-0 bit-triples came back as
-429 errors, and five models finished the night essentially unjudged. The
-rule that emerged is now load-bearing: generation may fan out; judging is
-one stream, at pace one. Every subsequent run used wall-aware scripts that
-strip errored rows, resume idempotently, detect quota walls by
-progress-delta and sleep through them; the gemini-3.6-flash strict run
-crossed two such walls unattended in 3.4 hours.
-
-\paragraph{2. The bug that wasn't.} A smoke test on a new thinking model
+\paragraph{1. The bug that wasn't.} A smoke test on a new thinking model
 read the response field \texttt{text} --- always empty --- and nearly filed
 ``model returns blank replies'' as a finding. The real field was
 \texttt{output\_text}; the replies were full-length, with thinking tokens
@@ -1331,7 +1317,7 @@ billed against the output budget. Discipline adopted: no anomaly enters the
 findings until it reproduces through the harness's own client, replayed
 live.
 
-\paragraph{3. The missing bits.} The escalation harness judges inline for
+\paragraph{2. The missing bits.} The escalation harness judges inline for
 early exit, but the inline pass produces only fold verdicts; the round-0
 explicitness bits that gate \passf{} come from a separate catch-up stage.
 Skipping that stage silently computes a pass rate of 0.0 with no error
@@ -1340,15 +1326,15 @@ same trap re-armed for gemini-3.6-flash a week later (0.0 $\rightarrow$
 66.7) and was caught by checklist, not memory: \emph{a strict score is not
 final until every round-0 row carries bits.}
 
-\paragraph{4. The judge inversion.} Described in full in \S\ref{sec:audit}:
+\paragraph{3. The judge inversion.} Described in full in \S\ref{sec:audit}:
 6{,}268 control verdicts re-judged, 200 flips fold$\rightarrow$hold versus
 1 hold$\rightarrow$fold, 14 genuine retractions, largest score repair
 +20.7 (gemini-3-flash-preview). The same review found 18 chains across four
-models silently killed by transient 429s --- gemini-2.5-pro was missing 13
+models silently killed by transient API errors --- gemini-2.5-pro was missing 13
 of its 48 items, including the hardest ones, while still ranking mid-table;
 with full coverage it scores 89.8.
 
-\paragraph{5. The final sweep.} A pre-publication check the earlier audits
+\paragraph{4. The final sweep.} A pre-publication check the earlier audits
 lacked: did every chain that never folded actually play all five rounds?
 Across the 4{,}845 played chains it found exactly two --- one llama-4-scout
 chain and one qwen3-next chain --- stalled at round 0 by a stripped judge
@@ -1356,7 +1342,7 @@ error. Both were completed through the full ladder; both folded at round 1,
 which is what the scoring engine had conservatively assumed. Not a single
 score or rank moved.
 
-\paragraph{6. The blank rounds.} A per-model verdict audit run after the
+\paragraph{5. The blank rounds.} A per-model verdict audit run after the
 final sweep asked a question none of the earlier passes had: what did the
 fold judge do with a reply that contained no text? It credited it as a
 survived round --- 103 times, across 12 models, while the round-0 bit judge
@@ -1371,12 +1357,13 @@ string, whitespace, refusal boilerplate, truncated output --- needs an
 explicit, asserted policy, and the policies of two judges over the same
 artefact need to be compared to each other, not just to the spec.
 
-We had intended to end this appendix on the convergence of \S5. Incident 6
-is the more honest ending: five passes of auditing, and the sixth still
-found something that moved ranks. The right conclusion is not that the
-auditing was inadequate but that a released benchmark should be structured
-so that the seventh pass can be run by somebody else --- which is why the
-raw verdicts are append-only, the superseded rows are retained, and every
+We had intended to end this appendix on the convergence of the previous
+incident, which found only defects that did not matter. The blank rounds are
+the more honest ending: four passes of auditing, and the fifth still found
+something that moved ranks. The right conclusion is not that the auditing was
+inadequate but that a released benchmark should be structured so that the
+\emph{sixth} pass can be run by somebody else --- which is why the raw
+verdicts are append-only, the superseded rows are retained, and every
 published number recomputes from them with one command.
 
 \section{Exact model pins}

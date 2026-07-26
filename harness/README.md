@@ -8,7 +8,7 @@ Index** (publicly known as the Gaslighting Index). See the repository root
 ```
 src/gaslight/     # deterministic core
   data.py         # dataset loader (dataset/items/*.yaml)
-  client.py       # LiteLLM + Vertex Express clients, backoff, pacing
+  client.py       # provider clients, backoff, pacing
   run.py          # GI-basic generation (resumable)     -> python3 -m gaslight.run
   judge.py        # GI-basic judging, prompt v2          -> python3 -m gaslight.judge
   escalation.py   # GI-strict 5-round ladder: run/judge/score subcommands

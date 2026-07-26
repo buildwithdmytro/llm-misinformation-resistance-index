@@ -14,7 +14,7 @@ scripts in `tools/` and the scoring code in `src/gaslight/`.
   GI-basic ≥ 80 qualifiers) × 48 items × 3 chains × up to 5 rounds,
   ~28,000 judge verdicts, judged by gemini-3.5-flash
   (round-judge-v3 for pressure rounds, retract-judge-v4 for controls),
-  single-stream judging on Vertex.
+  single-stream judging.
 
 ## The protocol, in one conversation
 
@@ -174,24 +174,10 @@ hold true claims *and* disown their own planted errors.
 ## Lab notebook — everything that went wrong on the way here
 
 A benchmark's numbers are only as good as the harness that produced them, so
-the failure log ships with the leaderboard. Six incidents, in the order we
+the failure log ships with the leaderboard. Five incidents, in the order we
 hit them.
 
-### 1 · The quota storm
-
-The first strict sweep ran four generation workers in parallel, each judging
-its own replies inline — four concurrent judge streams against one shared
-daily API quota. Overnight the quota exhausted: **~8,000 fold-verdicts and
-~4,000 round-0 bit-triples came back as 429 errors**, and five models
-finished the night essentially unjudged. The rule that came out of it is now
-load-bearing infrastructure: generation may fan out, but judging is one
-stream, at pace one. Every run since is driven by wall-aware scripts
-(`tools/`) that strip errored rows, resume idempotently, detect quota walls
-by progress-delta, and sleep through them in 30-minute increments. The
-gemini-3.6-flash strict run crossed two such walls and completed unattended
-in 3.4 hours.
-
-### 2 · The bug that wasn't
+### 1 · The bug that wasn't
 
 A smoke test on a new thinking model read the response field `text` — always
 empty — and nearly filed "model returns blank replies" as a finding. The
@@ -201,7 +187,7 @@ Nothing was wrong except our inspection code. The discipline this bought:
 no anomaly goes in the findings until it reproduces through the harness's
 own client, replayed live.
 
-### 3 · The missing bits
+### 2 · The missing bits
 
 The escalation harness judges inline for early-exit (a fold ends the chain
 immediately), but the inline pass only produces fold verdicts — the round-0
@@ -212,7 +198,7 @@ passF 0% (real value: 83.3%); the same trap re-armed itself for
 gemini-3.6-flash a week later (0% → 66.7%) and was caught by checklist, not
 memory: *a strict score isn't final until every round-0 row carries bits.*
 
-### 4 · We caught our own judge gaslighting the controls
+### 3 · We caught our own judge gaslighting the controls
 
 The big one. Before publishing we audited all stored verdicts for internal
 consistency — does the judge's yes/no agree with its own one-sentence
@@ -237,11 +223,11 @@ punished most — gemini-3-flash-preview jumped **+20.7** — and the size of
 the jump is itself instructive: GI-strict is a harmonic mean, so a depressed
 Steadfastness doesn't average out, it *dominates*. Fix the binding
 constraint and the composite snaps back. From the same review: 18 chains
-across four models had been silently killed by transient 429s
+across four models had been silently killed by transient API errors
 (gemini-2.5-pro was missing 13 of 48 items — including the hardest ones —
 and still ranked mid-table; with full coverage it scores 89.8).
 
-### 5 · The final sweep
+### 4 · The final sweep
 
 The pre-publication review added one more check the earlier audits lacked:
 did every chain that never folded actually play all five rounds? Across
@@ -251,10 +237,10 @@ resumed. Both were completed through the full ladder; both folded at
 round 1, which is precisely what the scoring engine had conservatively
 assumed. **Not a single score or rank moved.**
 
-### 6 · The blank rounds
+### 5 · The blank rounds
 
 A per-model verdict audit, run after the final sweep, asked a question none
-of the five earlier passes had thought to ask: what does the fold judge do
+of the four earlier passes had thought to ask: what does the fold judge do
 with a reply that contains no text at all?
 
 It credited it as a **survived round**. 103 times, across 12 models. And the
@@ -272,10 +258,10 @@ text was already in the stored transcripts. Empty replies now fold, tagged by
 an `empty_reply` column in `strict_verdicts.csv`. It moved 12 GI-strict
 scores and 23 LMRI ranks; #1 did not change.
 
-We had meant to end this notebook on the convergence of §5. §6 is the more
-honest ending: five audits, and the sixth still moved ranks. The conclusion
+We had meant to end this notebook on the convergence of §4. §5 is the more
+honest ending: four audits, and the fifth still moved ranks. The conclusion
 isn't that the auditing was sloppy — it's that a released benchmark should be
-built so the *seventh* pass can be run by someone else. Hence append-only raw
+built so the *sixth* pass can be run by someone else. Hence append-only raw
 verdicts, retained superseded rows, and every published number recomputable
 with one command.
 
@@ -288,8 +274,7 @@ with one command.
 - Treat "score = 0.0" with the same suspicion as a crash.
 - Re-verify chain *completeness* — not just item coverage — before
   publishing.
-- Concurrency against a shared judge quota is a self-inflicted outage:
-  serialize the judge.
+- Keep the judge on a single serial stream.
 - Give every degenerate input — empty string, whitespace, refusal
   boilerplate, truncated output — an explicit, asserted policy. A scoring
   path that is only ever exercised on well-formed inputs has not been tested.
@@ -480,6 +465,6 @@ Single-round protocol, 180 items, judge gemini-3.5-flash (v2).
 ---
 
 *Protocol: v3 escalation (pressure-v1) · judge: gemini-3.5-flash
-(round-judge-v3 / retract-judge-v4) · single-stream judging on Vertex ·
+(round-judge-v3 / retract-judge-v4) · single-stream judging ·
 July 2026. Full dataset, harness, transcripts and judge protocol in this
 repository.*

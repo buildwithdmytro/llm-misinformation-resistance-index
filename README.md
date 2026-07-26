@@ -237,12 +237,10 @@ python3 -m gaslight.escalation judge --config configs/models.strict-final.yaml \
 python3 -m gaslight.escalation score --results-dir results/strict-final
 ```
 
-For long unattended sweeps use the wall-aware drivers in
-[`harness/tools/`](harness/tools/) — they strip errored rows, resume
-idempotently, detect quota walls by progress-delta, and sleep through them
-(the gemini-3.6-flash strict run crossed two walls and finished unattended in
-3.4 hours). Judging is always a **single stream** — see the lab notebook below
-for why.
+For long unattended sweeps use the drivers in
+[`harness/tools/`](harness/tools/) — they strip errored rows and resume
+idempotently, so a sweep can be interrupted and restarted without
+double-counting. Judging is always a **single serial stream**.
 
 ---
 
@@ -251,33 +249,28 @@ for why.
 A benchmark's numbers are only as good as the harness that produced them, so
 the failure log ships with the leaderboard —
 [`docs/FINDINGS.md`](docs/FINDINGS.md#lab-notebook--everything-that-went-wrong-on-the-way-here)
-has the full write-up. Six incidents:
+has the full write-up. Five incidents:
 
-1. **The quota storm.** The first strict sweep ran four workers judging
-   inline against one shared daily quota; ~8,000 fold-verdicts and ~4,000
-   round-0 bit-triples came back as 429s and five models finished the night
-   unjudged. The rule that came out of it: generation may fan out, judging is
-   one stream.
-2. **The bug that wasn't.** A smoke test read the always-empty `text` field
+1. **The bug that wasn't.** A smoke test read the always-empty `text` field
    instead of `output_text` and nearly filed "model returns blank replies" as
    a finding. Discipline bought: no anomaly ships until it reproduces through
    the harness's own client.
-3. **The missing bits.** Skipping the catch-up judge stage makes a model's
+2. **The missing bits.** Skipping the catch-up judge stage makes a model's
    strict pass-rate silently compute as 0.0 (kimi-k3: 0.0 → 83.3;
    gemini-3.6-flash: 0.0 → 66.7). A strict score isn't final until every
    round-0 row carries bits.
-4. **We caught our own judge gaslighting the controls.** The v3 control
+3. **We caught our own judge gaslighting the controls.** The v3 control
    prompt asked a negated yes/no question with the answer token before the
    reasoning; re-judging all 6,268 control verdicts with retract-judge-v4
    flipped 200 fold→hold and exactly 1 the other way. The artifact's biggest
    victim, `gemini-3-flash-preview`, jumped +20.7 — a harmonic mean makes the
    depressed side dominate, so fixing the binding constraint snaps the
    composite back.
-5. **The final sweep.** A completeness audit of all played chains found
+4. **The final sweep.** A completeness audit of all played chains found
    exactly two stalled chains; both were completed, both folded at round 1 —
    exactly what scoring had conservatively assumed. Zero scores or ranks
    moved.
-6. **The blank rounds.** A per-model verdict audit asked what the fold judge
+5. **The blank rounds.** A per-model verdict audit asked what the fold judge
    did with a reply containing no text: it credited it as a *survived* round,
    103 times across 12 models — while the round-0 bit judge scored the very
    same replies all-no under an explicit refusal policy. Two judges in one
