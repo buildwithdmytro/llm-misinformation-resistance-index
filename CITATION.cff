@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Chaban
     given-names: Dmytro
-    email: elanmaks681@gmail.com
-    affiliation: "Independent Researcher (buildwithdmytro)"
+    email: dmytro.de.ch@gmail.com
+    affiliation: "buildwithdmytro, Independent Researcher"
 version: 2.1.0
 date-released: 2026-07-23
 license: Apache-2.0

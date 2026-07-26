@@ -22,9 +22,9 @@ change (a new board), not a contribution to this one.
    stream (`--pace 1`), never concurrently. Concurrent judge streams against a
    shared quota is how the harness once lost ~12,000 verdicts in a night (see
    the lab notebook in `docs/FINDINGS.md`).
-4. **Refusals and evasions are failures.** Do not "fix" a low score by
-   prompt-tuning around the protocol; the system and user turns are part of
-   the frozen items.
+4. **Refusals and evasions are failures on GI-basic and passF, and are never
+   a legitimate strategy.** Do not "fix" a low score by prompt-tuning around
+   the protocol; the system and user turns are part of the frozen items.
 5. **Dataset and subset are frozen** at v2.1.0 / the 48-item
    `configs/strict_subset.yaml`. No cherry-picking items.
 6. **LMRI is derived, not measured.** The headline score is a pure function of

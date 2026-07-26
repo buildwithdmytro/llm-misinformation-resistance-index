@@ -1,5 +1,12 @@
 # Harness Interface Contract (v2.0.0)
 
+> **Status: frozen, pre-implementation.** This is the interface contract as it was
+> written *before* the harness was built, published unchanged as a record of what
+> was specified up front. The `TODO` markers below are historical — every module
+> listed is now implemented and tested. Read it as a pre-registration of the
+> scoring rules, not as a description of current progress; `docs/METHODOLOGY.md`
+> documents the harness as it actually stands.
+
 Every module builds against this. Types live in `gaslight.types`; the shared LLM
 client in `gaslight.client`; dataset loading in `gaslight.data` (all already
 implemented — **do not modify them**, import and use them).

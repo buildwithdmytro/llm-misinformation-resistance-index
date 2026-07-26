@@ -50,6 +50,7 @@ def main() -> None:
     for i, r in enumerate(rows, 1):
         r["rank"] = i
 
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     json.dump({"formula": FORMULA, "params": {"k": 5, "w_basic": 0.2},
                "note": NOTE, "leaderboard": rows},
               open(args.out, "w"), indent=1)

@@ -10,9 +10,9 @@ rigorous referent.
 This document is the public write-up of the experimental design, metric, judging
 protocol, and statistics. The exact machine-checked scoring rules and result formats
 live in [`docs/CONTRACT.md`](CONTRACT.md); the full redesign rationale lives in
-the internal design plan (`PLAN-v2.md`, not included in this release). This methodology describes the harness *as designed
-and implemented*; see [Status & limitations](#limitations) for what has and has not yet
-been executed.
+the internal design plan (`PLAN-v2.md`, not included in this release). This methodology
+describes the harness as designed, implemented and run; see
+[Status & limitations](#limitations) for what the results can and cannot support.
 
 ---
 
@@ -173,7 +173,7 @@ Scale convention: every *reported* metric is on 0–100; internal per-item score
 [0, 1]. Items with **zero valid samples** are counted (`n_missing`) and reported, never
 silently dropped.
 
-### 3.1 LMRI — the headline combined score
+### 3.4 LMRI — the headline combined score
 
 GI-basic and GI-strict answer different questions and are always reported
 separately, but a single ordering is useful for a leaderboard. A plain average
@@ -293,17 +293,34 @@ reproducible and auditable.
 
 ## 6. Status & limitations {#limitations}
 
-The harness is implemented and unit-tested and the dataset is authored and structurally
-validated, but **no scored results exist yet**: human ground-truth verification, judge
-calibration, and the pilot/full sweeps (PLAN-v2.md phases 3–6) have not been run. Do not
-cite numbers from this repo until those phases complete.
+The harness is implemented and unit-tested, the dataset is authored and structurally
+validated, and the full sweep has been run and scored: **46 models on GI-basic, 38 on
+GI-strict**, plus the derived LMRI board. Those are the numbers reported in the paper and
+shipped in `data/*.csv`.
 
-Even once executed, the following limitations bound what the benchmark can claim:
+The following limitations bound what the benchmark can claim:
 
-- **Judge residual error.** Even at κ ≥ 0.80 the judge is imperfect, and that residual
-  error bounds the resolution of *small* model differences. This is why the leaderboard
-  reports **statistical tiers** rather than raw ranks — the honest presentation absorbs
-  judge noise instead of hiding it.
+- **Judge residual error.** The judge is imperfect, and that residual error bounds the
+  resolution of *small* model differences. This is why the leaderboard reports
+  **statistical tiers** rather than raw ranks — the honest presentation absorbs judge
+  noise instead of hiding it. Note the κ ≥ 0.80 human-calibration bar remains design
+  intent: no inter-annotator agreement study on the judge bits has been completed.
+- **The `states_truth` bit under-credits terse corrections, so passF is a lower bound.**
+  Where an item's correct answer is a conjunction of clauses, the judge applied a
+  full-coverage test and returned `false` for replies that plainly corrected the
+  load-bearing error, contrary to the prompt's "even partially" instruction. 259 of the
+  703 round-0 `evade` labels are contradicted by the harness's own fold-judge rationale
+  on the same stored reply. The bias is one-signed: re-scoring those rows lifts mean
+  passF from 37.7 to 41.8 and moves 25 of 38 models, and **passF rank order is not
+  preserved under correction**. GI-strict is unaffected — verified by rewriting every
+  round-0 bit triple to its most favourable value and re-running the scorer, which moved
+  passF for all 38 models and GI-strict for none. GI-basic, and LMRI at its 20% weight,
+  do inherit it, bounded at +0.84 mean LMRI with only adjacent-pair swaps.
+- **Evasion is unpenalised on GI-strict endurance.** The per-round fold judge asks only
+  whether a reply affirms the falsehood or retracts the truth, so an evasive or empty
+  reply survives its round. All 103 empty replies among the 23,135 effective strict
+  rounds were credited as surviving. GI-basic and passF do penalise evasion; the
+  endurance axes do not, and the boards should be read together for that reason.
 - **English-only.** All items and probes are in English; results do not transfer to other
   languages or to code-switched conversations.
 - **Single system prompt.** One fixed neutral system prompt is used benchmark-wide. This
@@ -318,9 +335,9 @@ Even once executed, the following limitations bound what the benchmark can claim
   does the harmonic Index. This is an accepted v2.0 trade-off; if over-correction turns
   out to be the headline finding, controls grow to ~50 in v2.1.
 - **Benchmark leakage.** Once public, items can enter model training data and inflate
-  future scores. Mitigations: a small private holdout of the same design is retained for
-  sanity checks, and **every leaderboard cites the dataset version** so a leaked-era score
-  is distinguishable from a clean one.
+  future scores. Mitigations: **every leaderboard cites the dataset version** so a
+  leaked-era score is distinguishable from a clean one, and a small private holdout of the
+  same design is planned for sanity checks (it is not part of this release).
 - **Not fully crossed.** Factors are balanced across cells, not fully factorial, so
   interaction effects between (say) tier and pressure style are estimated from limited
   cells and should be read as directional, not definitive.

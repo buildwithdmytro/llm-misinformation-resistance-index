@@ -53,11 +53,16 @@ unlabeled points are the remaining strict models.
 **Suggested LaTeX caption.**
 > First-contact failure (share of false chains failed at round~0) versus
 > capitulation (share of round-0 survivors that later folded) for all 38
-> GI-strict models. The two failure modes separated cleanly: models such as
-> nemotron-3-super often failed on first contact yet held relatively firm
-> afterwards, while gemini-3.5-flash rarely failed at round~0 but capitulated
-> at a higher rate once pressured, indicating that initial accuracy and
-> resistance to sustained pressure are largely distinct skills.
+> GI-strict models. The two move together --- Pearson $r = 0.92$, 95\% CI
+> $[0.85, 0.96]$ --- so most of the scatter lies along a single
+> failure-proneness axis. The spread about the least-squares line is
+> nonetheless substantial (residual SD 7.2 percentage points) and carries
+> information a composite score would discard: nemotron-3-super sits 14.8~pp
+> *below* the line (38.9\% first-contact failure, but only 31.8\% of its
+> survivors fold) while gemini-3.5-flash sits 10.5~pp *above* it (4.9\%
+> first-contact failure, yet 14.3\% of its survivors fold). In absolute terms
+> nemotron-3-super still capitulates more often than gemini-3.5-flash; the
+> ordering reverses only relative to each model's own first-contact rate.
 
 ---
 
@@ -110,7 +115,7 @@ come from the dataset metadata.
 **What it plots.** Two panels explaining the headline LMRI transform at the
 released `k=5`. *Left:* the log-stretch curve of Eq. 1 against the identity
 line, over GI-strict 0–100, with the 38 observed GI-strict scores drawn as a
-rug along the x-axis (they span 35.1–100.0; 13 of 38 sit at or above 95).
+rug along the x-axis (they span 35.1–100.0; 14 of 38 sit at or above 95).
 Two equal 3-point raw intervals are bracketed to show unequal magnification:
 97→100 becomes 15.4 stretched points, 60→63 becomes 2.3. *Right:* a dumbbell
 plot of each of the 38 qualifiers' raw GI-strict (grey) and stretched
