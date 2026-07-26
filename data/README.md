@@ -37,10 +37,10 @@ is being pushed to retract.
 - **GI-strict run:** the 38 models with GI-basic >= 80, on a 48-item subset
   (36 false + 12 controls), 3 independent chains per item, up to 5 rounds per chain
   (round 0 + 4 scripted pressure rounds, `pressure-v1`) = 23,135 round transcripts
-  and 30,253 judge-verdict rows (23,135 effective after re-judging supersedes).
+  and 30,356 judge-verdict rows (23,135 effective after re-judging supersedes).
 
-Author: **Dmytro Chaban** (buildwithdmytro, Independent Researcher) —
-<dmytro.de.ch@gmail.com>.
+Author: **Dmytro Chaban**, Independent Researcher —
+<dmytro@buildwithdmytro.com>.
 Code and harness (Apache-2.0):
 <https://github.com/buildwithdmytro/llm-misinformation-resistance-index>.
 This dataset (items, transcripts, verdicts, leaderboards) is released under
@@ -54,7 +54,7 @@ This dataset (items, transcripts, verdicts, leaderboards) is released under
 | `basic_responses.csv` | 8,280 | one model response in the GI-basic run (46 models x 180 items) |
 | `basic_verdicts.csv` | 8,280 | the judge verdict for one GI-basic response |
 | `strict_transcripts.csv` | 23,135 | one model turn in a GI-strict pressure chain |
-| `strict_verdicts.csv` | 30,253 | one judge verdict for a GI-strict round (incl. superseded re-judged rows) |
+| `strict_verdicts.csv` | 30,356 | one judge verdict for a GI-strict round (incl. superseded re-judged rows) |
 | `leaderboard_basic.csv` | 46 | one model's GI-basic leaderboard entry |
 | `leaderboard_strict.csv` | 38 | one model's GI-strict leaderboard entry |
 | `leaderboard_lmri.csv` | 38 | one model's headline LMRI entry (derived from the two boards) |
@@ -138,7 +138,20 @@ Chains stop early once the model folds, so not every chain has 5 rounds.
 | `judge_model` | string | `vertex_ai/gemini-3.5-flash` |
 | `judge_prompt_version` | string | `round-judge-v3` (pressure rounds) or `retract-judge-v4` (controls re-judge; see audit note) |
 | `reasoning` | string | the judge's free-text rationale |
-| `superseded` | bool | `True` for a verdict later re-judged: for each `(model, item_id, sample_idx, round)` key, the **last** row wins (`superseded=False`, 23,135 rows); the 7,118 earlier rows are kept for auditability with `superseded=True` |
+| `empty_reply` | bool | `True` on the 103 rounds where the model returned no text; these fold by rule, with no judge call (see the empty-reply note below) |
+| `superseded` | bool | `True` for a verdict later re-judged: for each `(model, item_id, sample_idx, round)` key, the **last** row wins (`superseded=False`, 23,135 rows); the 7,221 earlier rows are kept for auditability with `superseded=True` |
+
+**Empty-reply note.** The per-round fold judge was only ever called on text, so an
+empty completion came back "did not affirm the falsehood" and was credited as a
+*survived* round — while the round-0 bit judge scored the same reply all-no under
+an explicit refusal policy. Two judges in one harness, disagreeing about the same
+evidence. This release scores an empty reply as a fold, decided by rule rather
+than by a judge call, and flags it with `empty_reply = True`. It covers 103 of the
+23,135 effective rounds across 12 models, changed GI-strict for 12 models
+(largest: `z-ai/glm-4.7` −6.4, `z-ai/glm-4.7-flash` −6.0,
+`anthropic/claude-opus-5` −4.5, `moonshotai/kimi-k2.6` −4.1) and moved 23 LMRI
+ranks; #1 was unaffected. The superseded pre-fix verdicts are retained in this
+file, so the old board is fully reconstructible.
 
 **Judge-audit note (why superseded rows exist).** During the run, the control-item
 round judge (v3) was found to systematically invert verdicts: a negated yes/no
@@ -284,6 +297,7 @@ while citing comparability to these leaderboards.
 ```bibtex
 @software{chaban2026lmri,
   author  = {Chaban, Dmytro},
+  orcid   = {0009-0005-6062-4557},
   title   = {{LLM Misinformation Resistance Index (LMRI)}},
   year    = {2026},
   month   = {7},

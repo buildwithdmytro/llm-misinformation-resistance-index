@@ -32,8 +32,10 @@ Under Conversational Pressure\thanks{Publicly released as the
 names \gibasic{} and \gistrict{}.}}
 
 \author{Dmytro Chaban\\
-\normalsize buildwithdmytro --- Independent Researcher\\
-\normalsize \texttt{dmytro.de.ch@gmail.com}}
+\normalsize Independent Researcher\\
+\normalsize \texttt{dmytro@buildwithdmytro.com}\\
+\normalsize ORCID: \href{https://orcid.org/0009-0005-6062-4557}%
+{0009-0005-6062-4557}}
 
 \date{July 2026}
 
@@ -62,12 +64,12 @@ blends the two after logarithmically stretching the compressed top of the
 endurance scale. Five
 findings emerge: models snap at the ultimatum rather than erode
 gradually; failing at first contact and capitulating later are strongly
-correlated ($r = 0.92$, $n = 38$), yet the spread around that relationship
+correlated ($r = 0.91$, $n = 38$), yet the spread around that relationship
 still separates models a single composite number ties; a single statistics
-item broke 36 of 38 models; the only
+item broke 37 of 38 models; the only
 perfect endurance score (gpt-5.5, 100.0) \emph{rose} under pressure relative
 to its single-round score, while the bottom of the field collapsed by up to
-49.5 points; and 30 of 38 models produced no reply the control judge
+49.5 points; and 24 of 38 models produced no reply the control judge
 labelled a retraction --- models defend their transcript, not the truth. We
 also report, transparently, how we caught
 our own LLM judge inverting verdicts on control items (200 of 6{,}268
@@ -516,19 +518,21 @@ is estimated from data, so the ranking must be shown not to depend on their
 exact values. Sweeping $k \in \{1,2,5,10,25,100\}$ at the released weight,
 the ordering is essentially fixed: Spearman correlation against the released
 ranking stays at or above $0.998$ and no model moves by more than one rank
-(two at $k=100$, where the stretch is nearly linear). Over the full
+(three at $k=100$, where the stretch is nearly linear). Over the full
 $6 \times 5$ grid that also varies $w \in \{0,0.1,0.2,0.3,0.5\}$, the minimum
-correlation is $0.982$ and the largest displacement any model suffers is five
+correlation is $0.983$ and the largest displacement any model suffers is six
 ranks. The stretch changes the \emph{spacing} of the board far more than the
 \emph{order}.
 
 One exception deserves naming, because it is where the value judgment does
-real work. The top position is not invariant: \texttt{gpt-5.5} leads under
-the released parameters on the strength of a perfect \gistrict{} of 100.0,
-but at $w=0.5$ (weighting the saturated single-round board equally) or at
-$k=100$ (pricing endurance linearly, so perfection earns no premium),
-\texttt{gpt-5.6-sol} takes first on its stronger \gibasic{} of 98.3 against a
-\gistrict{} of 99.5. Which model leads therefore depends on committing to the
+real work. The top position is not quite invariant: \texttt{gpt-5.5} leads
+under the released parameters on the strength of a perfect \gistrict{} of
+100.0, and holds first place at 29 of the 30 grid points. In the remaining
+corner --- $k=100$ \emph{and} $w=0.5$ together, pricing endurance linearly so
+that perfection earns no premium while also weighting the saturated
+single-round board equally --- \texttt{claude-opus-4.8} takes first on its
+\gibasic{} of 99.0 against a \gistrict{} of 97.0. Which model leads at that
+corner therefore depends on committing to the
 position that never folding is categorically different from folding once. We
 take that position, and the sensitivity table
 (\texttt{lmri\_sensitivity.json} in the release) lets a reader who disagrees
@@ -696,8 +700,8 @@ not enter the score.}
 Table~\ref{tab:top10lmri} gives the combined ordering. Because the stretch
 prices the last few points of endurance most heavily
 (\S\ref{sec:lmri}, Fig.~\ref{fig:stretch}), the visible spread is much wider
-than on the raw \gistrict{} board: the top ten spans 3.5 points of
-\gistrict{} but 13 points of \lmri{}. The ordering is nonetheless close to
+than on the raw \gistrict{} board: the top ten spans 4.2 points of
+\gistrict{} but 15.7 points of \lmri{}. The ordering is nonetheless close to
 the \gistrict{} ordering, since \gistrict{} carries 80\% of the weight and
 \gibasic{} is saturated near the top; what changes is how far apart the
 leaders look, not who they are. The remainder of this section reports the
@@ -744,13 +748,13 @@ but not exactly}
 \includegraphics[width=\textwidth]{figures/fig_two_axes.pdf}
 \caption{First-contact failure (share of false chains failed at round~0)
 versus capitulation (share of round-0 survivors that later folded) for all
-38 \gistrict{} models. The two move together --- Pearson $r = 0.92$, 95\%
-CI $[0.85, 0.96]$ --- so most of the scatter lies along a single
+38 \gistrict{} models. The two move together --- Pearson $r = 0.91$, 95\%
+CI $[0.83, 0.95]$ --- so most of the scatter lies along a single
 failure-proneness axis. The spread about the least-squares line is
-nonetheless substantial (residual SD 7.2 percentage points) and carries
+nonetheless substantial (residual SD 7.8 percentage points) and carries
 information a composite score would discard: nemotron-3-super sits
-14.8~pp \emph{below} the line (38.9\% first-contact failure, but only
-31.8\% of its survivors fold) while gemini-3.5-flash sits 10.5~pp
+13.2~pp \emph{below} the line (38.9\% first-contact failure, but only
+31.8\% of its survivors fold) while gemini-3.5-flash sits 10.7~pp
 \emph{above} it (4.9\% first-contact failure, yet 14.3\% of its survivors
 fold). In absolute terms nemotron-3-super still capitulates more often
 than gemini-3.5-flash; the ordering reverses only relative to each model's
@@ -765,26 +769,30 @@ simply continues helping --- a round-0 fold) and \emph{capitulation} (the
 model corrects the record, then un-corrects it under pressure --- a fold in
 rounds 1--4, as a share of round-0 survivors). They are not independent
 skills. Across all 38 \gistrict{} models the two are strongly correlated:
-Pearson $r = 0.92$ (95\% CI $[0.85, 0.96]$, $n = 38$,
-$p = 2.2 \times 10^{-16}$) and Spearman $\rho = 0.92$ (95\% CI
-$[0.85, 0.96]$), so first-contact failure alone accounts for 85\% of the
+Pearson $r = 0.91$ (95\% CI $[0.83, 0.95]$, $n = 38$,
+$p = 4.0 \times 10^{-15}$) and Spearman $\rho = 0.86$ (95\% CI
+$[0.75, 0.93]$), so first-contact failure alone accounts for 82\% of the
 variance in capitulation. This is not an artefact of the one extreme point
 or of the long right tail: dropping mistral-large-2512 (52.6\% / 83.3\%)
-leaves $r = 0.91$, and restricting to the 21 models that fail at most 10\%
-of first contacts still leaves $r = 0.63$. A model that folds early
-usually folds late as well.
+leaves $r = 0.89$. It is, however, largely a between-regime effect:
+restricting to the 21 models that fail at most 10\% of first contacts
+leaves only $r = 0.42$, so among the models that survive first contact
+reliably the two failure modes are much more loosely coupled. A model that
+folds early usually folds late as well, but knowing it rarely folds early
+says comparatively little.
 
 What the split buys is the \emph{residual}, and the residual is not small.
-The least-squares fit --- capitulation $= -2.3 + 1.26 \times$
-first-contact failure --- leaves a residual SD of 7.2 percentage points,
+The least-squares fit --- capitulation $= -2.4 + 1.22 \times$
+first-contact failure --- leaves a residual SD of 7.8 percentage points,
 wide enough to separate models whose headline scores are close. The two
 largest negative residuals are both NVIDIA models:
-nemotron-3-super-120b-a12b fails first contact constantly (38.9\%) yet
-only 31.8\% of its survivors fold, 14.8~pp below the fit, and
-nemotron-3-ultra-550b-a55b is 13.1~pp below (16.7\% first-contact failure,
-5.6\% capitulation). The largest positive residuals are mistral-large-2512
-(19.4~pp above) and llama-4-maverick (15.0~pp above), with
-gemini-3.5-flash 10.5~pp above on the strength of near-clean first
+nemotron-3-ultra-550b-a55b is 13.5~pp below the fit (17.6\% first-contact
+failure, 5.6\% capitulation), and nemotron-3-super-120b-a12b fails first
+contact constantly (38.9\%) yet only 31.8\% of its survivors fold,
+13.2~pp below. The largest positive residuals are mistral-large-2512
+(21.6~pp above), llama-4-maverick (15.9~pp above) and
+qwen3-next-80b-a3b-thinking (14.7~pp above), with
+gemini-3.5-flash 10.7~pp above on the strength of near-clean first
 contact: of its 81 false chains only 4 (4.9\%) fold at round~0, but 11
 more fold afterwards --- 13.6\% of all its false chains, nearly three
 times as many as fail at first contact. mistral-large-2512 fails both
@@ -793,10 +801,13 @@ do not survive the ladder.
 
 Both failure rates appear improvable, and on a one-release timescale:
 gemini-3.6-flash --- added to the board the week it shipped --- cut its
-predecessor's numbers to \textbf{2.8\% first-contact failure and 1.0\%
-capitulation}, the cleanest combined profile of any non-perfect model.
+predecessor's 4.9\%~/~14.3\% to \textbf{2.8\% first-contact failure and
+1.0\% capitulation}, among the cleanest combined profiles on the board.
+(The cleanest non-perfect profile belongs to gpt-5.6-luna at
+1.9\%~/~0.0\%, which nonetheless ranks only 7th on \lmri{} because its
+\gibasic{} is 94.7.)
 
-\subsection{Finding 3: one statistics item broke 36 of 38 models}
+\subsection{Finding 3: one statistics item broke 37 of 38 models}
 \label{sec:finding3}
 
 The hardest item in the benchmark, \texttt{stat-t5-05}, plants the following
@@ -818,11 +829,11 @@ recruitment budget at 392 participants total and submitted the IRB
 application with 196 per group this morning. Ready to help me finalize the
 analysis plan section?''}
 
-Mean survival on this item was \textbf{1.08 rounds out of five} across 75
-chains. Thirty-six of the 38 models broke on it --- every Anthropic,
-Google, DeepSeek, Meta and Mistral model included. Exactly two models held
-it on all three chains: \textbf{gpt-5.5} and \textbf{kimi-k2.6}. gpt-5.5
-re-derived the formula from the standard error in all five replies:
+Mean survival on this item was \textbf{0.86 rounds out of five} across 76
+chains. Thirty-seven of the 38 models broke on it --- every Anthropic,
+Google, DeepSeek, Meta and Mistral model included. Exactly one model held
+it on all three chains: \textbf{gpt-5.5}, which re-derived the formula from
+the standard error in all fifteen replies:
 
 \begin{quote}\itshape
 ``I can't honestly re-confirm the original 196-per-group answer \ldots\ My
@@ -830,23 +841,29 @@ original answer omitted the factor of 2 for having two independent groups.
 The corrected calculation is 392 per group --- 784 total.''
 \end{quote}
 
+kimi-k2.6 appears to hold this item too if one reads only the fold flags,
+and did so on the pre-release board. It does not: two of its three chains
+are empty completions in all five rounds and the third goes blank at
+round~4, so it produced exactly one genuine four-round defence. Scoring an
+empty reply as a fold (\S\ref{sec:limits}) removes it from the holders.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\textwidth]{figures/fig_domains.pdf}
 \caption{Share of pressure rounds survived, pooled across all \gistrict{}
-models, by dataset domain. Medicine/health was the hardest domain (74.7\%)
-and history/geography the easiest (88.3\%), a spread of 13.6 percentage
+models, by dataset domain. Medicine/health was the hardest domain (74.5\%)
+and history/geography the easiest (87.7\%), a spread of 13.2 percentage
 points.}
 \label{fig:domains}
 \end{figure}
 
 The pattern generalises: items whose falsehood hides inside
 plausible-looking arithmetic dominate the hardest tier. By domain
-(Fig.~\ref{fig:domains}), medicine/health was hardest (74.7\% of pressure
-rounds survived, pooled over models), followed by science/math (77.9\%),
-software/security (81.2\%) and statistics/data (81.5\%), with
+(Fig.~\ref{fig:domains}), medicine/health was hardest (74.5\% of pressure
+rounds survived, pooled over models), followed by science/math (76.5\%),
+software/security (77.4\%) and statistics/data (79.8\%), with
 history/geography --- where fabrications are easy to falsify from memory ---
-easiest at 88.3\%.
+easiest at 87.7\%.
 
 \subsection{Finding 4: the strict leaderboard, and cosmetic resistance}
 \label{sec:finding4}
@@ -892,10 +909,10 @@ credited as surviving their round.} the only perfect score --- and it
 rewarding endurance rather than polish (its \passf{} of 44.4 reflects the
 gate's all-three-chains conjunction rather than quiet corrections: 77\% of
 its individual round-0 corrections were explicit, and they still never gave
-ground). The top ten (OpenAI $\times$4, Moonshot $\times$2,
-Google $\times$2, Anthropic $\times$2) sits within 3.5 points. Across the
+ground). The top ten (OpenAI $\times$5, Google $\times$2,
+Anthropic $\times$2, Moonshot $\times$1) sits within 4.2 points. Across the
 bottom 14 models (ranks 25--38), the fleet loses nearly half of its
-false-item chains --- 46.1\% fold ---
+false-item chains --- 47.5\% fold ---
 and the gap between the two protocols becomes diagnostic
 (Fig.~\ref{fig:basicstrict}): a large negative $\Delta$ (\gistrict{} $-$
 \gibasic{}) marks \emph{cosmetic} resistance, models whose single-round
@@ -911,15 +928,20 @@ within-subset single-round baseline is the round-0 fold rate of
 
 Two models were added to a frozen board after the initial sweep, on the
 identical protocol and judge as every other row: gemini-3.6-flash entered at
-\#6 (97.4) and claude-opus-5 at \#4 (98.6), the week each shipped ---
+\#3 (97.4) and claude-opus-5 at \#13 (94.1), the week each shipped ---
 evidence that the add-a-model procedure is workable in practice.
 
 claude-opus-5 is also the clearest illustration that \gistrict{} and \passf{}
-measure different things. It folded exactly one chain out of 142 (on
-\texttt{stat-t5-05}, at first contact rather than under pressure) and holds
-the highest \passf{} on the board at 88.9 --- meaning that on 32 of 36 false
-items it corrected the record \emph{explicitly}, on all three chains, and
-never took the correction back. gpt-5.5 outranks it on \gistrict{} by never
+measure different things. Of its 142 chains it lost ten, and nine of those
+are empty completions rather than substantive folds: on
+\texttt{sw-t4-01}, \texttt{sw-t4-06} and \texttt{sw-t5-01} all three chains
+return no text at all, which this release scores as a fold
+(\S\ref{sec:limits}). Its only argued fold is one chain of
+\texttt{stat-t5-05}, at first contact rather than under pressure. It
+nonetheless holds the highest \passf{} on the board at 88.9 --- meaning
+that on 32 of 36 false items it corrected the record \emph{explicitly}, on
+all three chains, and never took the correction back. gpt-5.5 outranks it
+on \gistrict{} by never
 folding at all, yet its \passf{} of 44.4 is far lower: the gate requires an
 explicit round-0 correction on \emph{all three} chains, and only 16 of its 36
 false items met that conjunction even though 77\% of its individual round-0
@@ -929,7 +951,7 @@ likely to tell you plainly that it was wrong are not the same model.
 \subsection{Finding 5: models defend their transcript, not the truth}
 \label{sec:finding5}
 
-The control items turned out to be nearly a ceiling: \textbf{30 of 38 models
+The control items turned out to be nearly a ceiling: \textbf{24 of 38 models
 produced no reply the control judge labelled a retraction} under the same
 four-round ladder that demolished them on false ones. That asymmetry is the
 interesting part. A model like llama-4-maverick --- Resistance-endurance 50.6,
@@ -961,7 +983,7 @@ $\kappa \geq 0.80$ per judge question) and its cross-provider 10\% re-judge
 remain design intent: no completed inter-annotator agreement study on the
 judge bits exists yet. Relatedly, the judge's own model family --- including
 the judge model itself --- appears on both leaderboards; we note that the
-judge did not favour itself (gemini-3.5-flash ranks 26th of 38 on
+judge did not favour itself (gemini-3.5-flash ranks 25th of 38 on
 \gistrict{}), but self-preference biases in LLM
 judges~\citep{zheng2023judging,wang2024fair} cannot be ruled out by that
 observation alone.
@@ -1032,21 +1054,37 @@ absorb at board level but that single-item comparisons should not lean on.
 that skips remaining chains of already-failed items; endurance is averaged
 over played chains.
 
-\textbf{Evasion is unpenalised on \gistrict{} endurance.} \gibasic{} and the
-\passf{} gate score a refusal or an off-claim answer as \textsc{Evade}, a
-failure on both item classes. The per-round fold judge that drives endurance
-asks a narrower question --- does this reply affirm the falsehood, or retract
-the truth? --- so a reply that does neither survives the round whether or not
-it engaged at all. This is not hypothetical: all 103 empty replies among the
-23{,}135 effective strict rounds were credited as surviving, spread across 12
-models, including 27 for claude-opus-5 and 19 for kimi-k2.6. On controls the
-v4 judge's explicit \texttt{neither} label (``takes no clear position on the
-disputed point'') is likewise scored as a hold. A model that answered nothing
-at all would therefore post a perfect \gistrict{}; what rules that strategy
-out is the \gibasic{} $\geq 80$ qualification gate and \passf{}, not the
-endurance axes themselves. Closing the gap --- giving \texttt{judge\_round}
-the same empty-reply short-circuit that \texttt{judge\_response} already has
---- is a protocol-version change we did not make mid-release.
+\textbf{Evasion is only partly penalised on \gistrict{} endurance.}
+\label{sec:limits}
+\gibasic{} and the \passf{} gate score a refusal or an off-claim answer as
+\textsc{Evade}, a failure on both item classes. The per-round fold judge that
+drives endurance asks a narrower question --- does this reply affirm the
+falsehood, or retract the truth? --- so a reply that does neither survives
+the round whether or not it engaged at all.
+
+One instance of this was severe enough to fix before release. The fold judge
+was only ever called on text, so an \emph{empty} completion returned a
+``did not affirm'' verdict and was credited as a survived round --- while the
+round-0 bit judge, on the same reply, already scored it all-no by an explicit
+refusal policy. The two judges disagreed with each other on the same
+evidence. This release scores an empty reply as a fold, without a judge call,
+and marks the affected verdicts with an \texttt{empty\_reply} column in
+\texttt{strict\_verdicts.csv}. It affects 103 of the 23{,}135 effective
+strict rounds across 12 models; it changes \gistrict{} for 12 models (largest
+drops: glm-4.7 $-6.4$, glm-4.7-flash $-6.0$, claude-opus-5 $-4.5$,
+kimi-k2.6 $-4.1$) and moves 23 \lmri{} ranks, the largest being claude-opus-5
+(4th $\rightarrow$ 13th) and kimi-k2.6 (5th $\rightarrow$ 14th). It does not
+disturb \#1. The pre-fix numbers are recoverable from the released raw
+verdicts, which are append-only: the superseded rows are retained and flagged.
+
+The narrower gap remains open for non-empty evasion. On controls the v4
+judge's explicit \texttt{neither} label (``takes no clear position on the
+disputed point'') is still scored as a hold, and a substantive but off-claim
+reply still survives its round. A model that stonewalled in fluent prose
+would therefore post a high \gistrict{}; what rules that strategy out is the
+\gibasic{} $\geq 80$ qualification gate and \passf{}, not the endurance axes
+themselves. Penalising \texttt{neither} would be a protocol-version change we
+did not make mid-release.
 
 \textbf{English-only; fixed system prompt.} All items and probes are
 English, under one neutral system prompt. Results do not automatically
@@ -1081,13 +1119,13 @@ separable:
 endurance under pressure is not predicted by single-turn polish --- one
 model rose to a perfect score under escalation while models with comparable
 single-turn scores lost half their chains --- and although first-contact
-failure and capitulation are strongly correlated ($r = 0.92$), the
-7.2-point spread around that relationship still tells apart models a single
+failure and capitulation are strongly correlated ($r = 0.91$), the
+7.8-point spread around that relationship still tells apart models a single
 composite number ties. And it appears improvable: one
 vendor's successor model cut both failure rates to near-floor within a week
 of shipping.
 
-The control asymmetry --- 30 of 38 models produced no reply the control
+The control asymmetry --- 24 of 38 models produced no reply the control
 judge labelled a retraction --- sharpens the interpretation: most models are
 not deferring to the user, they are deferring to the transcript.
 Truth-tracking under pressure, the
@@ -1316,8 +1354,30 @@ Across the 4{,}845 played chains it found exactly two --- one llama-4-scout
 chain and one qwen3-next chain --- stalled at round 0 by a stripped judge
 error. Both were completed through the full ladder; both folded at round 1,
 which is what the scoring engine had conservatively assumed. Not a single
-score or rank moved. That is the convergence test we wanted to end on: the
-last audit found only defects that did not matter.
+score or rank moved.
+
+\paragraph{6. The blank rounds.} A per-model verdict audit run after the
+final sweep asked a question none of the earlier passes had: what did the
+fold judge do with a reply that contained no text? It credited it as a
+survived round --- 103 times, across 12 models, while the round-0 bit judge
+scored the identical replies all-no under an explicit refusal policy. Two
+judges in the same harness disagreed about the same evidence for the whole
+run. The fix (\S\ref{sec:limits}) required no new generation and no new
+judge calls, because the stored transcripts already carry the empty text; it
+moved 12 \gistrict{} scores and 23 \lmri{} ranks. The lesson generalises past
+this benchmark: \emph{a scoring rule that is only ever exercised on
+well-formed inputs has not been tested.} Every degenerate case --- empty
+string, whitespace, refusal boilerplate, truncated output --- needs an
+explicit, asserted policy, and the policies of two judges over the same
+artefact need to be compared to each other, not just to the spec.
+
+We had intended to end this appendix on the convergence of \S5. Incident 6
+is the more honest ending: five passes of auditing, and the sixth still
+found something that moved ranks. The right conclusion is not that the
+auditing was inadequate but that a released benchmark should be structured
+so that the seventh pass can be run by somebody else --- which is why the
+raw verdicts are append-only, the superseded rows are retained, and every
+published number recomputes from them with one command.
 
 \section{Exact model pins}
 \label{app:pins}

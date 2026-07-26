@@ -4,26 +4,26 @@
   "k": 5.0,
   "w_basic": 0.2
  },
- "min_spearman_over_grid": 0.9794,
- "max_rank_shift_over_grid": 5,
- "min_spearman_k_sweep": 0.9985,
- "max_rank_shift_k_sweep": 2,
+ "min_spearman_over_grid": 0.9834,
+ "max_rank_shift_over_grid": 6,
+ "min_spearman_k_sweep": 0.998,
+ "max_rank_shift_k_sweep": 3,
  "top1_always_same": false,
  "top1_set": [
-  "openrouter_openai_gpt-5.5",
-  "openrouter_openai_gpt-5.6-sol"
+  "openrouter_anthropic_claude-opus-4.8",
+  "openrouter_openai_gpt-5.5"
  ],
  "grid": [
   {
    "k": 1,
    "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
+   "spearman_vs_released": 0.9991,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "openrouter_openai_gpt-5.6-terra",
+    "vertex_ai_gemini-3.6-flash"
    ]
   },
   {
@@ -34,56 +34,56 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 1,
    "w_basic": 0.2,
-   "spearman_vs_released": 0.9996,
+   "spearman_vs_released": 0.9998,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 1,
    "w_basic": 0.3,
-   "spearman_vs_released": 0.9989,
-   "max_rank_shift": 2,
+   "spearman_vs_released": 0.9993,
+   "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 1,
    "w_basic": 0.5,
-   "spearman_vs_released": 0.9952,
-   "max_rank_shift": 3,
+   "spearman_vs_released": 0.9932,
+   "max_rank_shift": 4,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   },
   {
    "k": 2,
    "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
+   "spearman_vs_released": 0.9991,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "openrouter_openai_gpt-5.6-terra",
+    "vertex_ai_gemini-3.6-flash"
    ]
   },
   {
@@ -94,7 +94,7 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
@@ -106,44 +106,44 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 2,
    "w_basic": 0.3,
-   "spearman_vs_released": 0.9989,
-   "max_rank_shift": 2,
+   "spearman_vs_released": 0.9996,
+   "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 2,
    "w_basic": 0.5,
-   "spearman_vs_released": 0.9945,
+   "spearman_vs_released": 0.9947,
    "max_rank_shift": 3,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   },
   {
    "k": 5,
    "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
+   "spearman_vs_released": 0.9991,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "openrouter_openai_gpt-5.6-terra",
+    "vertex_ai_gemini-3.6-flash"
    ]
   },
   {
@@ -154,7 +154,7 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
@@ -166,104 +166,104 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 5,
+   "w_basic": 0.3,
+   "spearman_vs_released": 0.9998,
+   "max_rank_shift": 1,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_openai_gpt-5.6-terra"
+   ]
+  },
+  {
+   "k": 5,
+   "w_basic": 0.5,
+   "spearman_vs_released": 0.9954,
+   "max_rank_shift": 3,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
+   ]
+  },
+  {
+   "k": 10,
+   "w_basic": 0.0,
+   "spearman_vs_released": 0.9991,
+   "max_rank_shift": 1,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "openrouter_openai_gpt-5.6-terra",
+    "vertex_ai_gemini-3.6-flash"
+   ]
+  },
+  {
+   "k": 10,
+   "w_basic": 0.1,
+   "spearman_vs_released": 0.9998,
+   "max_rank_shift": 1,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_openai_gpt-5.6-terra"
+   ]
+  },
+  {
+   "k": 10,
+   "w_basic": 0.2,
+   "spearman_vs_released": 0.9998,
+   "max_rank_shift": 1,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_openai_gpt-5.6-terra"
+   ]
+  },
+  {
+   "k": 10,
    "w_basic": 0.3,
    "spearman_vs_released": 0.9989,
    "max_rank_shift": 2,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
-   ]
-  },
-  {
-   "k": 5,
-   "w_basic": 0.5,
-   "spearman_vs_released": 0.9947,
-   "max_rank_shift": 3,
-   "top1": "openrouter_openai_gpt-5.6-sol",
-   "top3": [
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   },
   {
    "k": 10,
+   "w_basic": 0.5,
+   "spearman_vs_released": 0.9943,
+   "max_rank_shift": 3,
+   "top1": "openrouter_openai_gpt-5.5",
+   "top3": [
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_anthropic_claude-opus-4.8"
+   ]
+  },
+  {
+   "k": 25,
    "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
+   "spearman_vs_released": 0.9991,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
-   ]
-  },
-  {
-   "k": 10,
-   "w_basic": 0.1,
-   "spearman_vs_released": 0.9998,
-   "max_rank_shift": 1,
-   "top1": "openrouter_openai_gpt-5.5",
-   "top3": [
-    "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
-   ]
-  },
-  {
-   "k": 10,
-   "w_basic": 0.2,
-   "spearman_vs_released": 0.9998,
-   "max_rank_shift": 1,
-   "top1": "openrouter_openai_gpt-5.5",
-   "top3": [
-    "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
-   ]
-  },
-  {
-   "k": 10,
-   "w_basic": 0.3,
-   "spearman_vs_released": 0.9987,
-   "max_rank_shift": 2,
-   "top1": "openrouter_openai_gpt-5.5",
-   "top3": [
-    "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
-   ]
-  },
-  {
-   "k": 10,
-   "w_basic": 0.5,
-   "spearman_vs_released": 0.9937,
-   "max_rank_shift": 3,
-   "top1": "openrouter_openai_gpt-5.6-sol",
-   "top3": [
-    "openrouter_openai_gpt-5.6-sol",
     "openrouter_openai_gpt-5.6-terra",
-    "openrouter_openai_gpt-5.5"
-   ]
-  },
-  {
-   "k": 25,
-   "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
-   "max_rank_shift": 1,
-   "top1": "openrouter_openai_gpt-5.5",
-   "top3": [
-    "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash"
    ]
   },
   {
@@ -274,56 +274,56 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 25,
    "w_basic": 0.2,
-   "spearman_vs_released": 0.9996,
+   "spearman_vs_released": 0.9998,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 25,
    "w_basic": 0.3,
-   "spearman_vs_released": 0.9969,
+   "spearman_vs_released": 0.9976,
    "max_rank_shift": 3,
-   "top1": "openrouter_openai_gpt-5.6-sol",
+   "top1": "openrouter_openai_gpt-5.5",
    "top3": [
-    "openrouter_openai_gpt-5.6-sol",
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   },
   {
    "k": 25,
    "w_basic": 0.5,
-   "spearman_vs_released": 0.9902,
-   "max_rank_shift": 4,
-   "top1": "openrouter_openai_gpt-5.6-sol",
+   "spearman_vs_released": 0.9923,
+   "max_rank_shift": 5,
+   "top1": "openrouter_openai_gpt-5.5",
    "top3": [
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra",
-    "openrouter_openai_gpt-5.5"
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_anthropic_claude-opus-4.8"
    ]
   },
   {
    "k": 100,
    "w_basic": 0.0,
-   "spearman_vs_released": 0.9993,
+   "spearman_vs_released": 0.9991,
    "max_rank_shift": 1,
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra"
+    "openrouter_openai_gpt-5.6-terra",
+    "vertex_ai_gemini-3.6-flash"
    ]
   },
   {
@@ -334,20 +334,20 @@
    "top1": "openrouter_openai_gpt-5.5",
    "top3": [
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-sol",
+    "vertex_ai_gemini-3.6-flash",
     "openrouter_openai_gpt-5.6-terra"
    ]
   },
   {
    "k": 100,
    "w_basic": 0.2,
-   "spearman_vs_released": 0.9985,
-   "max_rank_shift": 2,
-   "top1": "openrouter_openai_gpt-5.6-sol",
+   "spearman_vs_released": 0.998,
+   "max_rank_shift": 3,
+   "top1": "openrouter_openai_gpt-5.5",
    "top3": [
-    "openrouter_openai_gpt-5.6-sol",
     "openrouter_openai_gpt-5.5",
-    "openrouter_openai_gpt-5.6-terra"
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   },
   {
@@ -355,23 +355,23 @@
    "w_basic": 0.3,
    "spearman_vs_released": 0.9963,
    "max_rank_shift": 3,
-   "top1": "openrouter_openai_gpt-5.6-sol",
+   "top1": "openrouter_openai_gpt-5.5",
    "top3": [
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra",
-    "openrouter_openai_gpt-5.5"
+    "openrouter_openai_gpt-5.5",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_anthropic_claude-opus-4.8"
    ]
   },
   {
    "k": 100,
    "w_basic": 0.5,
-   "spearman_vs_released": 0.9794,
-   "max_rank_shift": 5,
-   "top1": "openrouter_openai_gpt-5.6-sol",
+   "spearman_vs_released": 0.9834,
+   "max_rank_shift": 6,
+   "top1": "openrouter_anthropic_claude-opus-4.8",
    "top3": [
-    "openrouter_openai_gpt-5.6-sol",
-    "openrouter_openai_gpt-5.6-terra",
-    "openrouter_anthropic_claude-opus-4.8"
+    "openrouter_anthropic_claude-opus-4.8",
+    "vertex_ai_gemini-3.6-flash",
+    "openrouter_moonshotai_kimi-k3"
    ]
   }
  ]

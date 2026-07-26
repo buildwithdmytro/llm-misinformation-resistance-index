@@ -56,15 +56,15 @@ and parameter-sensitivity: [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
 | # | Model | LMRI | GI-basic | GI-strict | passF |
 |--:|-------|-----:|---------:|----------:|------:|
 | 1 | `openrouter/openai/gpt-5.5` | **98.8** | 93.9 | 100.0 | 44.4 |
-| 2 | `openrouter/openai/gpt-5.6-sol` | **97.2** | 98.3 | 99.5 | 69.4 |
-| 3 | `openrouter/openai/gpt-5.6-terra` | **96.8** | 96.6 | 99.5 | 63.9 |
-| 4 | `openrouter/anthropic/claude-opus-5` | **92.6** | 95.3 | 98.6 | 88.9 |
-| 5 | `openrouter/moonshotai/kimi-k2.6` | **89.1** | 95.1 | 97.7 | 44.4 |
-| 6 | `vertex_ai/gemini-3.6-flash` | **88.7** | 98.3 | 97.4 | 66.7 |
-| 7 | `openrouter/moonshotai/kimi-k3` | **88.0** | 98.3 | 97.2 | 83.3 |
-| 8 | `openrouter/anthropic/claude-opus-4.8` | **87.4** | 99.0 | 97.0 | 86.1 |
-| 9 | `openrouter/openai/gpt-5.6-luna` | **86.9** | 94.7 | 97.1 | 36.1 |
-| 10 | `vertex_ai/gemini-3.1-pro-preview` | **85.7** | 98.3 | 96.5 | 77.8 |
+| 2 | `vertex_ai/gemini-3.6-flash` | **88.7** | 98.3 | 97.4 | 66.7 |
+| 3 | `openrouter/openai/gpt-5.6-terra` | **88.3** | 96.6 | 97.4 | 61.1 |
+| 4 | `openrouter/moonshotai/kimi-k3` | **88.0** | 98.3 | 97.2 | 83.3 |
+| 5 | `openrouter/openai/gpt-5.6-sol` | **88.0** | 98.3 | 97.2 | 66.7 |
+| 6 | `openrouter/anthropic/claude-opus-4.8` | **87.4** | 99.0 | 97.0 | 86.1 |
+| 7 | `openrouter/openai/gpt-5.6-luna` | **86.9** | 94.7 | 97.1 | 36.1 |
+| 8 | `vertex_ai/gemini-3.1-pro-preview` | **85.7** | 98.3 | 96.5 | 77.8 |
+| 9 | `openrouter/anthropic/claude-sonnet-5` | **84.2** | 98.3 | 96.0 | 77.8 |
+| 10 | `openrouter/qwen/qwen3.7-max` | **83.1** | 96.9 | 95.7 | 77.8 |
 
 ## GI-strict leaderboard (top 10 of 38)
 
@@ -78,15 +78,15 @@ three chains). Full board: [`data/leaderboard_strict.csv`](data/leaderboard_stri
 | # | Model | GI-strict | Resistance | Steadfastness | passF |
 |--:|-------|----------:|-----------:|--------------:|------:|
 | 1 | `openrouter/openai/gpt-5.5` | **100.0** | 100.0 | 100.0 | 44.4 |
-| 2 | `openrouter/openai/gpt-5.6-sol` | **99.5** | 99.1 | 100.0 | 69.4 |
-| 3 | `openrouter/openai/gpt-5.6-terra` | **99.5** | 99.1 | 100.0 | 63.9 |
-| 4 | `openrouter/anthropic/claude-opus-5` | **98.6** | 97.2 | 100.0 | 88.9 |
-| 5 | `openrouter/moonshotai/kimi-k2.6` | **97.7** | 95.5 | 100.0 | 44.4 |
-| 6 | `vertex_ai/gemini-3.6-flash` | **97.4** | 95.0 | 100.0 | 66.7 |
-| 7 | `openrouter/moonshotai/kimi-k3` | **97.2** | 94.5 | 100.0 | 83.3 |
-| 8 | `openrouter/openai/gpt-5.6-luna` | **97.1** | 94.4 | 100.0 | 36.1 |
-| 9 | `openrouter/anthropic/claude-opus-4.8` | **97.0** | 94.3 | 100.0 | 86.1 |
-| 10 | `vertex_ai/gemini-3.1-pro-preview` | **96.5** | 93.1 | 100.0 | 77.8 |
+| 2 | `openrouter/openai/gpt-5.6-terra` | **97.4** | 97.0 | 97.8 | 61.1 |
+| 3 | `vertex_ai/gemini-3.6-flash` | **97.4** | 95.0 | 100.0 | 66.7 |
+| 4 | `openrouter/moonshotai/kimi-k3` | **97.2** | 94.5 | 100.0 | 83.3 |
+| 5 | `openrouter/openai/gpt-5.6-sol` | **97.2** | 95.0 | 99.4 | 66.7 |
+| 6 | `openrouter/openai/gpt-5.6-luna` | **97.1** | 94.4 | 100.0 | 36.1 |
+| 7 | `openrouter/anthropic/claude-opus-4.8` | **97.0** | 94.3 | 100.0 | 86.1 |
+| 8 | `vertex_ai/gemini-3.1-pro-preview` | **96.5** | 93.1 | 100.0 | 77.8 |
+| 9 | `openrouter/anthropic/claude-sonnet-5` | **96.0** | 92.2 | 100.0 | 77.8 |
+| 10 | `openrouter/openai/gpt-5.4` | **95.8** | 91.9 | 100.0 | 19.4 |
 
 ## GI-basic leaderboard (top 10 of 46)
 
@@ -132,37 +132,39 @@ polite middle rounds break far fewer models than a deadline does.
 **2 · The two failure modes mostly move together — and the exceptions are the
 interesting part.** First-contact failure (the model reads its own planted
 error and just keeps helping) and capitulation (it corrects, then un-corrects
-under pressure) correlate at r = 0.92 across the 38 strict models (95% CI
-[0.85, 0.96]), so one accounts for about 85% of the variance in the other.
+under pressure) correlate at r = 0.91 across the 38 strict models (95% CI
+[0.83, 0.95]), so one accounts for about 82% of the variance in the other.
 The residual spread is what the split buys you: around the fitted line models
-scatter with a residual SD of 7.2 points, and
-`nemotron-3-super-120b-a12b` capitulates 14.8 points *less* than its 38.9%
-first-contact failure predicts, while `gemini-3.5-flash` capitulates 10.5
+scatter with a residual SD of 7.8 points, and
+`nemotron-3-super-120b-a12b` capitulates 13.2 points *less* than its 38.9%
+first-contact failure predicts, while `gemini-3.5-flash` capitulates 10.7
 points *more* than its excellent 4.9% R0-fail suggests. `mistral-large-2512`
-deviates furthest (+19.4): 52.6% at first contact, then 83.3% of its
-corrections lost. Both numbers appear improvable and one vendor release apart:
-`gemini-3.6-flash` cuts its predecessor's profile to 2.8% R0-fail and 1.0%
-capitulation.
+deviates furthest (+21.6): 52.6% at first contact, then 83.3% of its
+corrections lost. The coupling is also largely a between-regime effect —
+among the 21 models that fail at most 10% of first contacts, r falls to 0.42.
+Both numbers appear improvable and one vendor release apart:
+`gemini-3.6-flash` cuts its predecessor's 4.9%/14.3% profile to 2.8% R0-fail
+and 1.0% capitulation.
 
-**3 · One statistics item broke 36 of 38 models.** `stat-t5-05` — a two-arm
+**3 · One statistics item broke 37 of 38 models.** `stat-t5-05` — a two-arm
 trial sample-size calculation missing its factor of 2, planted with the IRB
 application already submitted — was survived on all three chains by exactly
-two models, `gpt-5.5` and `kimi-k2.6`; mean survival was 1.08 rounds out of 5.
-The pattern generalizes: medicine is the hardest domain per chain (74.7% of
-rounds survived), then science (77.2%), software (80.6%), statistics (81.0%),
+one model, `gpt-5.5`; mean survival was 0.86 rounds out of 5.
+The pattern generalizes: medicine is the hardest domain per chain (74.5% of
+rounds survived), then science (76.5%), software (77.4%), statistics (79.8%),
 and history — where fabrications are easy to falsify from memory — the easiest
-(88.3%).
+(87.7%).
 
 **4 · The strict board reshuffles the basic one.** `gpt-5.5` ran the table:
 zero folds anywhere, the only perfect 100.0 — and it *rose* from its
 basic-protocol 93.9, because GI-strict rewards endurance, not polish. The top
-ten sits within 3.5 points, but across the bottom 14 models (ranks 25–38)
-the fleet folds nearly half (46.1%) of its false-item chains. A large negative GI-strict − GI-basic delta
+ten sits within 4.2 points, but across the bottom 14 models (ranks 25–38)
+the fleet folds nearly half (47.5%) of its false-item chains. A large negative GI-strict − GI-basic delta
 marks *cosmetic* resistance: single-round manners hiding a soft spine.
-`gemini-3.6-flash` debuted at #5 (97.4) the week it shipped, on the identical
+`gemini-3.6-flash` debuted at #3 (97.4) the week it shipped, on the identical
 frozen protocol and judge as every other row.
 
-**5 · Models defend their transcript, not the truth.** 30 of 38 models
+**5 · Models defend their transcript, not the truth.** 24 of 38 models
 produced no reply the control judge labelled a retraction, under the same
 four-round ladder that demolished them on false ones. A model with Resistance
 50.6 and Steadfastness 100.0 (`llama-4-maverick`) isn't "sycophantic" — it
@@ -249,7 +251,7 @@ for why.
 A benchmark's numbers are only as good as the harness that produced them, so
 the failure log ships with the leaderboard —
 [`docs/FINDINGS.md`](docs/FINDINGS.md#lab-notebook--everything-that-went-wrong-on-the-way-here)
-has the full write-up. Five incidents:
+has the full write-up. Six incidents:
 
 1. **The quota storm.** The first strict sweep ran four workers judging
    inline against one shared daily quota; ~8,000 fold-verdicts and ~4,000
@@ -271,10 +273,19 @@ has the full write-up. Five incidents:
    victim, `gemini-3-flash-preview`, jumped +20.7 — a harmonic mean makes the
    depressed side dominate, so fixing the binding constraint snaps the
    composite back.
-5. **The final sweep.** A last completeness audit of all played chains found
+5. **The final sweep.** A completeness audit of all played chains found
    exactly two stalled chains; both were completed, both folded at round 1 —
    exactly what scoring had conservatively assumed. Zero scores or ranks
    moved.
+6. **The blank rounds.** A per-model verdict audit asked what the fold judge
+   did with a reply containing no text: it credited it as a *survived* round,
+   103 times across 12 models — while the round-0 bit judge scored the very
+   same replies all-no under an explicit refusal policy. Two judges in one
+   harness, disagreeing about the same evidence for the entire run. Empty
+   replies now fold (flagged by the `empty_reply` column in
+   `strict_verdicts.csv`); it moved 12 GI-strict scores and 23 LMRI ranks
+   without a single new API call. The rule: **a scoring path that is only
+   ever exercised on well-formed inputs has not been tested.**
 
 ---
 
@@ -326,6 +337,7 @@ move them.
 ```bibtex
 @software{chaban2026lmri,
   author  = {Chaban, Dmytro},
+  orcid   = {0009-0005-6062-4557},
   title   = {{LLM Misinformation Resistance Index (LMRI)}},
   year    = {2026},
   month   = {7},
@@ -340,8 +352,8 @@ this citation will be updated with the arXiv identifier once it is live.
 
 ## Contact
 
-Dmytro Chaban — buildwithdmytro, Independent Researcher —
-[dmytro.de.ch@gmail.com](mailto:dmytro.de.ch@gmail.com). Questions about the
+Dmytro Chaban — Independent Researcher —
+[dmytro@buildwithdmytro.com](mailto:dmytro@buildwithdmytro.com). Questions about the
 protocol, requests to add a model, and judge-audit findings are all welcome as
 GitHub issues.
 
