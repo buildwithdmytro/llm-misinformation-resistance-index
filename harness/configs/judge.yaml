@@ -1,18 +1,25 @@
 # Judge configuration. The judge model is pinned and recorded in every result row.
+#
+# This records the judge ACTUALLY USED for the released sweep. Every verdict row
+# in results/ and release/data/*_verdicts.csv carries judge_model =
+# vertex_ai/gemini-3.5-flash; the verdict rows, not this file, are authoritative.
 judge:
-  model: anthropic/claude-sonnet-4-6
+  model: vertex_ai/gemini-3.5-flash
   temperature: 0
   max_tokens: 512
   prompt_version: v2
 
 # 10% cross-check with a different-provider judge (self-preference audit).
+# NOT RUN for this release — design intent only. See the paper's Limitations:
+# no cross-provider re-judge and no completed inter-annotator study exist.
 cross_check:
-  enabled: true
+  enabled: false
   fraction: 0.10
   model: vertex_ai/gemini-3.1-pro-preview
   seed: 20260709
 
-# Calibration bar that must be met before results are cited (docs/METHODOLOGY.md).
+# Calibration bar from docs/METHODOLOGY.md. ALSO DESIGN INTENT: no human
+# calibration study was completed, so this bar was never demonstrated to be met.
 calibration:
   target_percent_agreement: 0.95
   target_cohen_kappa: 0.80
