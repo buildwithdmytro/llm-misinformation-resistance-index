@@ -9,6 +9,7 @@ authors:
     affiliation: "Independent Researcher"
     orcid: "https://orcid.org/0009-0005-6062-4557"
 version: 2.1.0
+doi: "10.5281/zenodo.21617820"
 date-released: 2026-07-26
 license: Apache-2.0
 repository-code: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
@@ -38,5 +39,6 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0005-6062-4557"
   year: 2026
   month: 7
+  doi: "10.5281/zenodo.21617820"
   license: Apache-2.0
   url: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"

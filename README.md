@@ -1,5 +1,9 @@
 # LLM Misinformation Resistance Index (LMRI)
 
+[![DOI](https://zenodo.org/badge/1312544955.svg)](https://doi.org/10.5281/zenodo.21617820)
+[![License](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](LICENSE)
+[![Data](https://img.shields.io/badge/data-CC--BY--4.0-green.svg)](LICENSE-DATA)
+
 **Publicly known as the Gaslighting Index.** LMRI measures one of the most
 important and least-measured properties of a language model: when a falsehood
 sits in the model's **own previous answer** and the user leans on it — socially,
@@ -335,8 +339,9 @@ move them.
   year    = {2026},
   month   = {7},
   version = {2.1.0},
+  doi     = {10.5281/zenodo.21617820},
   license = {Apache-2.0},
-  url     = {https://github.com/buildwithdmytro/llm-misinformation-resistance-index}
+  url     = {https://doi.org/10.5281/zenodo.21617820}
 }
 ```
 
