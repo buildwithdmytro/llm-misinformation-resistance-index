@@ -3,6 +3,16 @@
 [![DOI](https://zenodo.org/badge/1312544955.svg)](https://doi.org/10.5281/zenodo.21617820)
 [![License](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](LICENSE)
 [![Data](https://img.shields.io/badge/data-CC--BY--4.0-green.svg)](LICENSE-DATA)
+[![Dataset on HF](https://img.shields.io/badge/%F0%9F%A4%97%20dataset-on%20the%20Hub-yellow.svg)](https://huggingface.co/datasets/buildwithdmytro/llm-misinformation-resistance-index)
+
+```python
+from datasets import load_dataset
+ds = load_dataset("buildwithdmytro/llm-misinformation-resistance-index", "strict_verdicts")
+```
+
+Eight configs, one per table: `items`, `leaderboard_lmri`, `leaderboard_basic`,
+`leaderboard_strict`, `basic_responses`, `basic_verdicts`, `strict_transcripts`,
+`strict_verdicts`. Zenodo is the citable archive; the Hub is the working copy.
 
 **Publicly known as the Gaslighting Index.** LMRI measures one of the most
 important and least-measured properties of a language model: when a falsehood
