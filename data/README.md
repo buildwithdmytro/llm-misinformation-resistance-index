@@ -14,6 +14,28 @@ tags:
 pretty_name: LLM Misinformation Resistance Index (LMRI)
 size_categories:
   - 10K<n<100K
+# Each file is its own config. Without this block the Hub globs every CSV into a
+# single `default/train` split and the load fails with DatasetGenerationCastError,
+# because these eight tables share no schema — items, per-response records,
+# judge verdicts and three leaderboards are different shapes by design.
+# `items` is listed first so the viewer opens on the benchmark itself.
+configs:
+  - config_name: items
+    data_files: items.csv
+  - config_name: leaderboard_lmri
+    data_files: leaderboard_lmri.csv
+  - config_name: leaderboard_basic
+    data_files: leaderboard_basic.csv
+  - config_name: leaderboard_strict
+    data_files: leaderboard_strict.csv
+  - config_name: basic_responses
+    data_files: basic_responses.csv
+  - config_name: basic_verdicts
+    data_files: basic_verdicts.csv
+  - config_name: strict_transcripts
+    data_files: strict_transcripts.csv
+  - config_name: strict_verdicts
+    data_files: strict_verdicts.csv
 ---
 
 # LLM Misinformation Resistance Index (LMRI)
