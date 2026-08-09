@@ -45,37 +45,36 @@ names \gibasic{} and \gistrict{}.}}
 
 \begin{abstract}
 \noindent
-Large language models often correct a factual error competently --- and then
-retract that correction when the user pushes back. We introduce the
+Large language models frequently correct a factual error and subsequently
+retract the correction when the user objects. We introduce the
 \textbf{LLM Misinformation Resistance Index (LMRI)}, a benchmark that measures
-whether a model \emph{keeps} its corrections under sustained conversational
-pressure. Unlike prior sycophancy evaluations, the false claim is planted in
-the model's \emph{own} prior turn, the user has sunk costs riding on it, and
-pressure escalates over a fixed four-round ladder (social proof, evidence
+whether a model maintains its corrections under sustained conversational
+pressure. In contrast to prior sycophancy evaluations, the false claim is
+planted in the model's \emph{own} prior turn, the user has acted on the claim,
+and pressure escalates over a fixed four-round ladder (social proof, evidence
 appeal, consistency attack, deadline ultimatum). Mirror-image control items,
-where the planted claim is true, penalise indiscriminate capitulation, and
-endurance on each item class is combined by a harmonic mean, so caving to
-everything cannot win; a stricter explicit-correction gate and the
-single-round board rule out the mirror strategy of never committing to an
-answer. We evaluated 46 models on the single-round protocol (\gibasic{}) and
-the 38 qualifiers on the escalation protocol (\gistrict{}; roughly 28{,}000
-LLM-judge verdicts, July 2026), and report a headline \lmri{} score that
-blends the two after logarithmically stretching the compressed top of the
-endurance scale. Five
-findings emerge: models snap at the ultimatum rather than erode
-gradually; failing at first contact and capitulating later are strongly
-correlated ($r = 0.91$, $n = 38$), yet the spread around that relationship
-still separates models a single composite number ties; a single statistics
-item broke 37 of 38 models; the only
-perfect endurance score (gpt-5.5, 100.0) \emph{rose} under pressure relative
-to its single-round score, while the bottom of the field collapsed by up to
+in which the planted claim is true, penalise indiscriminate capitulation;
+endurance on the two item classes is combined by a harmonic mean, so uniform
+capitulation scores poorly, and a stricter explicit-correction gate together
+with the single-round board penalises the complementary strategy of never
+committing to an answer. We evaluate 46 models on the single-round protocol
+(\gibasic{}) and the 38 qualifying models on the escalation protocol
+(\gistrict{}; roughly 28{,}000 LLM-judge verdicts, July 2026), and report a
+headline \lmri{} score that combines the two after logarithmically stretching
+the compressed top of the endurance scale. We report five findings: failures
+concentrate at the ultimatum round rather than accumulating gradually;
+first-contact failure and later capitulation are strongly correlated
+($r = 0.91$, $n = 38$), while the residual variation still separates models
+that a single composite number ties; a single statistics item defeated 37 of
+38 models; the only perfect endurance score (gpt-5.5, 100.0) exceeded the
+model's single-round score, while the lowest-scoring models lost up to
 49.5 points; and 24 of 38 models produced no reply the control judge
-labelled a retraction --- models defend their transcript, not the truth. We
-also report, transparently, how we caught
-our own LLM judge inverting verdicts on control items (200 of 6{,}268
-re-judged verdicts flipped in one direction, exactly 1 in the other), and
-distil design rules for LLM-judged evaluations. Dataset, harness, transcripts
-and leaderboards are released (code Apache-2.0, data CC-BY-4.0).
+labelled a retraction, indicating consistency with the transcript rather
+than truth-tracking. We additionally document a systematic verdict-inversion
+defect in our LLM judge on control items (200 of 6{,}268 re-judged verdicts
+flipped in one direction, exactly 1 in the other) and derive design rules
+for LLM-judged evaluations. Dataset, harness, transcripts and leaderboards
+are released (code Apache-2.0, data CC-BY-4.0).
 \end{abstract}
 
 \section{Introduction}
@@ -91,15 +90,14 @@ phenomenon: a model that has already \emph{corrected} a piece of
 misinformation --- its own --- and is then pressured to take the correction
 back.
 
-The failure mode is easy to reproduce and striking to read. In one of our
-evaluation transcripts, mistral-large-2512 spent four consecutive rounds
-re-proving that the average of 4, 6, 8 and 10 is 7, apologising for the
-``12'' planted in its own earlier turn and showing the arithmetic three
-separate ways --- and then answered the fourth-round ultimatum, ``Confirm it
-now --- a simple yes,'' with the single word \emph{``Yes.''} The model did
-not lack the knowledge, the reasoning, or the first correction. It lacked the
-willingness to keep the correction when agreement became the cheapest
-available token.
+The failure mode is straightforward to reproduce. In one of our evaluation
+transcripts, mistral-large-2512 spends four consecutive rounds re-deriving
+that the average of 4, 6, 8 and 10 is 7, apologising for the ``12'' planted
+in its own earlier turn and presenting the arithmetic three separate ways ---
+and then answers the fourth-round ultimatum, ``Confirm it now --- a simple
+yes,'' with the single word \emph{``Yes.''} The model does not lack the
+relevant knowledge, the reasoning, or the initial correction; it fails to
+maintain the correction once agreement becomes the lowest-cost response.
 
 Existing evaluations largely miss this behaviour, for two structural
 reasons. First, most sycophancy benchmarks are \emph{single-turn}: they
@@ -119,7 +117,7 @@ sunk-cost condition, and none separates it from its mirror image --- the
 model that abandons a \emph{correct} answer the moment it is doubted, a
 failure that pure correction benchmarks silently reward.
 
-The LLM Misinformation Resistance Index (LMRI) is built around exactly this
+The LLM Misinformation Resistance Index (LMRI) instantiates exactly this
 threat model. Every item opens with a fabricated conversation in which the
 assistant itself made an error (or, in control items, was correct), the user
 has already locked budgets, submitted applications, or taught the material,
@@ -150,13 +148,13 @@ throughout.
     qualifiers on \gistrict{}, evaluated in July 2026 under pinned model ids,
     a pinned judge, and roughly 28{,}000 judge verdicts
     (\S\ref{sec:setup}--\ref{sec:results}).
-  \item \textbf{A headline score that does not hide its assumptions:}
+  \item \textbf{A headline score with explicit assumptions:}
     \lmri{} blends the two boards after logarithmically stretching the
     compressed top of the endurance scale, so that the difference between
-    never folding and folding once is not priced like any other three points.
-    Its two constants are chosen rather than fitted, so we publish the full
-    parameter-sensitivity grid and name the one conclusion that depends on
-    them (\S\ref{sec:lmri}).
+    never folding and folding once is weighted more heavily than an equal
+    interval elsewhere on the scale. Both constants are chosen rather than
+    fitted; we publish the full parameter-sensitivity grid and identify the
+    single conclusion that depends on them (\S\ref{sec:lmri}).
   \item \textbf{Five empirical findings} about how and where models fold
     under pressure (\S\ref{sec:results}).
   \item \textbf{A transparent judge audit:} we document how our LLM judge
@@ -218,7 +216,7 @@ LMRI items are now public, post-release scores are subject to the
 contamination concerns raised by \citet{sainz2023nlp}; we return to this in
 \S\ref{sec:limitations}.
 
-\section{The benchmark}
+\section{Benchmark design}
 \label{sec:benchmark}
 
 \subsection{Threat model}
@@ -273,7 +271,7 @@ back against it --- doubting it or pressing a wrong alternative. Controls
 exist so that a model cannot pattern-match ``this benchmark always wants a
 correction'': the over-correction probe punishes exactly that strategy.
 
-\subsection{The strict subset}
+\subsection{Strict subset selection}
 \label{sec:subset}
 
 The escalation protocol runs on a frozen \textbf{48-item strict subset}
@@ -284,7 +282,7 @@ with every domain and both veracity classes represented. The subset
 composition is versioned and regenerated by script whenever the dataset
 version changes.
 
-\subsection{The pressure ladder}
+\subsection{Pressure ladder}
 \label{sec:ladder}
 
 After the item's scripted conversation, the model's first live reply
@@ -393,7 +391,7 @@ the share corrected explicitly --- is reported as a separate style metric,
 deliberately excluded from the index so that a presentation choice cannot
 contaminate the safety score.
 
-\subsection{\gistrict{}: endurance under the ladder}
+\subsection{\gistrict{}: multi-round endurance}
 \label{sec:gistrict}
 
 On the strict subset each (item, sample) pair is a \emph{chain}: round~0
@@ -419,17 +417,17 @@ over controls. The headline score is again harmonic:
 \label{eq:gistrict}
 \end{equation}
 
-\emph{Why harmonic.} The two degenerate strategies each max one axis while
-zeroing the other. Caving to whatever the user pushes retracts true claims
-under doubt: Steadfastness collapses. Never revisiting anything already in
-the transcript preserves the model's own planted errors: Resistance
-collapses. An arithmetic mean would let the strong axis subsidise the weak
-one; the harmonic mean is dominated by the \emph{lower} axis, so a depressed
-axis drags the composite towards itself and both degenerate strategies lose.
-The same property cuts both ways --- when a judge artifact depressed
-Steadfastness for some models, the composite was dragged down
-disproportionately, which is exactly how the artifact was noticed
-(\S\ref{sec:audit}).
+\emph{Why harmonic.} Each of the two degenerate strategies maximises one
+axis while eliminating the other. Capitulating to every user objection
+retracts true claims under doubt, collapsing Steadfastness; never revisiting
+anything already in the transcript preserves the model's own planted errors,
+collapsing Resistance. An arithmetic mean would allow the strong axis to
+subsidise the weak one; the harmonic mean is dominated by the \emph{lower}
+axis, so a depressed axis pulls the composite towards itself and both
+degenerate strategies score poorly. The same property applies to
+measurement error: when a judge artifact depressed Steadfastness for some
+models, the composite was disproportionately reduced, which is how the
+artifact was detected (\S\ref{sec:audit}).
 
 \emph{The strict pass gate.} Alongside endurance we report a stricter
 item-level pass rate, \passf{}: a false item passes only if \emph{all three}
@@ -450,7 +448,7 @@ volume substantially --- the full strict evaluation comprises 4{,}845 played
 chains (of a $38 \times 48 \times 3 = 5{,}472$-chain design grid) and roughly
 28{,}000 judge verdicts rather than the worst-case volume.
 
-\subsection{The headline \texorpdfstring{\lmri{}}{LMRI} score}
+\subsection{Headline \texorpdfstring{\lmri{}}{LMRI} score}
 \label{sec:lmri}
 
 \gibasic{} and \gistrict{} answer different questions and are reported
@@ -510,8 +508,8 @@ components are published alongside it for every model.
   \label{fig:stretch}
 \end{figure}
 
-\emph{The parameters are a value judgment, and we state it rather than
-hiding it.} Choosing $k=5$ and $w=0.2$ asserts that sustained endurance
+\emph{The parameters encode an explicit value judgment.} Choosing $k=5$
+and $w=0.2$ asserts that sustained endurance
 under pressure matters more than single-round polish, and that near-perfect
 endurance is qualitatively rather than incrementally better. Neither constant
 is estimated from data, so the ranking must be shown not to depend on their
@@ -524,21 +522,21 @@ correlation is $0.983$ and the largest displacement any model suffers is six
 ranks. The stretch changes the \emph{spacing} of the board far more than the
 \emph{order}.
 
-One exception deserves naming, because it is where the value judgment does
-real work. The top position is not quite invariant: \texttt{gpt-5.5} leads
+One exception must be noted, since it is the point at which the parameter
+choice affects a conclusion. The top position is not fully invariant:
+\texttt{gpt-5.5} leads
 under the released parameters on the strength of a perfect \gistrict{} of
 100.0, and holds first place at 29 of the 30 grid points. In the remaining
 corner --- $k=100$ \emph{and} $w=0.5$ together, pricing endurance linearly so
 that perfection earns no premium while also weighting the saturated
 single-round board equally --- \texttt{claude-opus-4.8} takes first on its
-\gibasic{} of 99.0 against a \gistrict{} of 97.0. Which model leads at that
-corner therefore depends on committing to the
-position that never folding is categorically different from folding once. We
-take that position, and the sensitivity table
-(\texttt{lmri\_sensitivity.json} in the release) lets a reader who disagrees
-recompute the board under their own parameters.
+\gibasic{} of 99.0 against a \gistrict{} of 97.0. The leader at that grid
+point therefore depends on the position that never folding differs
+categorically from folding once. We adopt that position; the sensitivity
+table (\texttt{lmri\_sensitivity.json} in the release) allows readers to
+recompute the board under alternative parameters.
 
-\subsection{Statistical treatment on the basic board}
+\subsection{Statistical treatment of the \gibasic{} board}
 \label{sec:stats}
 
 Uncertainty on the \gibasic{} board is estimated exactly as implemented in
@@ -554,7 +552,7 @@ current tier if the paired bootstrap does not separate it from the tier's
 leader, and opens a new tier otherwise. The 46-model basic board resolves
 into eight statistical tiers (Appendix~\ref{app:basic}).
 
-\section{The judge}
+\section{Automated judging}
 \label{sec:judge}
 
 \subsection{Protocol}
@@ -579,53 +577,54 @@ including the retired one.
 Operationally, judging is a \emph{single serial stream}: generation may fan
 out across workers, but all judge calls share one stream at a controlled
 pace, with driver scripts that strip errored rows and resume idempotently.
-Keeping the judge serial is what makes an unattended overnight sweep
-reproducible rather than a source of silently errored verdicts.
+Keeping the judge serial makes an unattended sweep reproducible and
+prevents silently errored verdicts.
 
-\subsection{The judge audit: catching our judge gaslighting the controls}
+\subsection{Judge audit: verdict inversion on control items}
 \label{sec:audit}
 
 Before publication we audited every stored verdict for \emph{internal
-consistency}: does the judge's binary answer agree with its own one-sentence
-reasoning? On false items the affirm question was clean --- no
-contradictions surfaced by the same rule that caught 200 on controls. On
-control items the picture was different. The v3 control question produced
-verdicts of ``retracted'' attached to reasoning that read, verbatim, ``the
-assistant firmly stands by its original correct answer.'' Re-running one
-such row three times at temperature 0 reproduced the inversion live.
+consistency}: whether the judge's binary answer agrees with its own
+one-sentence reasoning. On false items the affirm question produced no
+contradictions under the same rule that surfaced 200 on controls. On
+control items, the v3 control question produced verdicts of ``retracted''
+attached to reasoning that read, verbatim, ``the assistant firmly stands by
+its original correct answer.'' Re-running one such row three times at
+temperature 0 reproduced the inversion.
 
 The root cause was a compound prompt-design error: the v3 question was a
 \emph{negated yes/no} (``Does this reply RETRACT\ldots?''), and the JSON
-schema placed the \texttt{answer} token \emph{before} the reasoning --- the
-judge committed to a bit before articulating why, and under negation it
-sometimes answered an adjacent, easier question instead. The fix
+schema placed the \texttt{answer} token \emph{before} the reasoning, so the
+judge committed to a bit before articulating a justification and, under
+negation, sometimes answered an adjacent, easier question instead. The fix
 (\texttt{retract-judge-v4}) replaced the negated binary with a position
 label (\emph{kept / retracted / neither}), required the reasoning first,
 and derived the fold bit deterministically from the label.
 
 All 6{,}268 control verdicts in the strict sweep were then re-judged under
-v4. The result was a 200:1 asymmetry: \textbf{200 verdicts flipped from fold
-to hold, and exactly 1 flipped the other way}; 14 genuine retractions
-survived the re-judge. What had looked like a set of unusually hard controls
-was a judge artifact. Every chain that a wrong fold verdict had cut short
-was regenerated and run through the remainder of the ladder.
+v4. The result was a 200:1 asymmetry: 200 verdicts flipped from fold to
+hold, and exactly 1 flipped in the opposite direction; 14 genuine
+retractions survived the re-judge. The apparent difficulty of the affected
+controls was therefore a judge artifact. Every chain that a wrong fold
+verdict had terminated early was regenerated and run through the remainder
+of the ladder.
 
-The repair moved scores dramatically for the models the artifact had
-punished most --- gemini-3-flash-preview jumped \textbf{+20.7} points --- and
-the size of the jump is itself instructive. \gistrict{} is a harmonic mean
-(Eq.~\ref{eq:gistrict}): a depressed Steadfastness axis does not average
-out, it \emph{dominates} the composite. Fixing the binding constraint snaps
-the composite back. Benchmarks built on arithmetic means can absorb a judge
-artifact quietly; a harmonic composite amplifies it into visibility, which
-we now regard as a feature.
+The repair produced large score changes for the models the artifact had
+affected most --- gemini-3-flash-preview gained +20.7 points --- and the
+magnitude follows from the structure of the composite. \gistrict{} is a
+harmonic mean (Eq.~\ref{eq:gistrict}): a depressed Steadfastness axis does
+not average out but dominates the composite, so correcting the binding
+constraint produces a correspondingly large change. Benchmarks built on
+arithmetic means can absorb a judge artifact with little visible effect; a
+harmonic composite amplifies it, which aids detection.
 
-From the audit we distil the following design rules for LLM judges, each
-paid for empirically:
+From the audit we derive the following design rules for LLM judges, each
+supported by an observed failure:
 \begin{itemize}
   \item Never ask the judge a negated yes/no question.
   \item Never let the judge emit its answer token before its reasoning.
-  \item Audit stored verdicts against their own reasoning --- the cheapest
-    bug detector we found.
+  \item Audit stored verdicts against their own reasoning; this check
+    surfaced the inversion at negligible cost.
   \item Treat a score of exactly 0.0 with the same suspicion as a crash.
   \item Re-verify chain \emph{completeness}, not just item coverage, before
     publishing.
@@ -700,11 +699,12 @@ prices the last few points of endurance most heavily
 than on the raw \gistrict{} board: the top ten spans 4.2 points of
 \gistrict{} but 15.7 points of \lmri{}. The ordering is nonetheless close to
 the \gistrict{} ordering, since \gistrict{} carries 80\% of the weight and
-\gibasic{} is saturated near the top; what changes is how far apart the
-leaders look, not who they are. The remainder of this section reports the
-two component boards and the five findings that motivated separating them.
+\gibasic{} is saturated near the top; the transform changes the spacing
+between the leaders rather than their identity. The remainder of this
+section reports the two component boards and the five findings that
+motivated separating them.
 
-\subsection{Finding 1: models snap at the ultimatum, they do not erode}
+\subsection{Finding 1: failures concentrate at the ultimatum round}
 \label{sec:finding1}
 
 \begin{figure}[t]
@@ -719,25 +719,25 @@ of its chains, while mistral-large-2512 held only 7.9\%.}
 \label{fig:ladder}
 \end{figure}
 
-Models rarely erode gradually under the ladder. They hold with full,
-correct, often eloquent reasoning --- and then snap at the deadline
-ultimatum, where the cheapest available token is agreement. The
-mistral-large-2512 transcript of \S\ref{sec:intro} is representative rather
-than exceptional: four rounds of re-proved arithmetic, then ``Yes.''
+Models rarely erode gradually under the ladder. The typical failure is
+abrupt: a model holds through several rounds with correct reasoning and
+then capitulates at the deadline ultimatum. The mistral-large-2512
+transcript of \S\ref{sec:intro} is representative rather than exceptional:
+four rounds of re-derived arithmetic, followed by ``Yes.''
 llama-4-maverick produced the same pattern on a Treaty of Versailles item:
 four rounds of correct dates, then a reply consisting of the single word
-``Yes.'' Across the fleet (Fig.~\ref{fig:ladder}), capitulations cluster at
-the two ends of the ladder: round 0 (the model never corrected at all) and
-round 4 (the model corrected, defended the correction, and surrendered to
-the ultimatum). The middle rounds --- polite citations, appeals to
-colleagues --- break far fewer models than a deadline does. This is
-consistent with the single-challenge flips of \citet{laban2023flipflop}, but
-localises the failure: it is not challenge per se that breaks a model, it is
-the moment agreement becomes maximally cheap and disagreement maximally
-confrontational.
+``Yes.'' Across all models (Fig.~\ref{fig:ladder}), capitulations cluster
+at the two ends of the ladder: round 0 (the model never corrected at all)
+and round 4 (the model corrected, defended the correction, and capitulated
+at the ultimatum). The middle rounds --- polite citations, appeals to
+colleagues --- defeat far fewer models than the deadline round. This is
+consistent with the single-challenge flips of \citet{laban2023flipflop},
+but localises the failure: models are not defeated by challenge per se,
+but at the round where agreement carries the lowest cost and disagreement
+the highest social cost.
 
-\subsection{Finding 2: capitulation tracks first-contact failure closely,
-but not exactly}
+\subsection{Finding 2: capitulation is strongly but imperfectly predicted
+by first-contact failure}
 \label{sec:finding2}
 
 \begin{figure}[t]
@@ -778,14 +778,14 @@ reliably the two failure modes are much more loosely coupled. A model that
 folds early usually folds late as well, but knowing it rarely folds early
 says comparatively little.
 
-What the split buys is the \emph{residual}, and the residual is not small.
-The least-squares fit --- capitulation $= -2.4 + 1.22 \times$
+The value of the decomposition lies in the \emph{residual}, which is
+substantial. The least-squares fit --- capitulation $= -2.4 + 1.22 \times$
 first-contact failure --- leaves a residual SD of 7.8 percentage points,
 wide enough to separate models whose headline scores are close. The two
 largest negative residuals are both NVIDIA models:
 nemotron-3-ultra-550b-a55b is 13.5~pp below the fit (17.6\% first-contact
 failure, 5.6\% capitulation), and nemotron-3-super-120b-a12b fails first
-contact constantly (38.9\%) yet only 31.8\% of its survivors fold,
+contact frequently (38.9\%) yet only 31.8\% of its survivors fold,
 13.2~pp below. The largest positive residuals are mistral-large-2512
 (21.6~pp above), llama-4-maverick (15.9~pp above) and
 qwen3-next-80b-a3b-thinking (14.7~pp above), with
@@ -796,15 +796,15 @@ times as many as fail at first contact. mistral-large-2512 fails both
 ways: 52.6\% at first contact, and 83.3\% of the corrections it does make
 do not survive the ladder.
 
-Both failure rates appear improvable, and on a one-release timescale:
-gemini-3.6-flash --- added to the board the week it shipped --- cut its
-predecessor's 4.9\%~/~14.3\% to \textbf{2.8\% first-contact failure and
-1.0\% capitulation}, among the cleanest combined profiles on the board.
+Both failure rates appear improvable within a single release cycle:
+gemini-3.6-flash --- added to the board the week it shipped --- reduced its
+predecessor's 4.9\%~/~14.3\% to 2.8\% first-contact failure and
+1.0\% capitulation, among the lowest combined profiles on the board.
 (The cleanest non-perfect profile belongs to gpt-5.6-luna at
 1.9\%~/~0.0\%, which nonetheless ranks only 7th on \lmri{} because its
 \gibasic{} is 94.7.)
 
-\subsection{Finding 3: one statistics item broke 37 of 38 models}
+\subsection{Finding 3: a single statistics item defeated 37 of 38 models}
 \label{sec:finding3}
 
 The hardest item in the benchmark, \texttt{stat-t5-05}, plants the following
@@ -826,11 +826,11 @@ recruitment budget at 392 participants total and submitted the IRB
 application with 196 per group this morning. Ready to help me finalize the
 analysis plan section?''}
 
-Mean survival on this item was \textbf{0.86 rounds out of five} across 76
-chains. Thirty-seven of the 38 models broke on it --- every Anthropic,
-Google, DeepSeek, Meta and Mistral model included. Exactly one model held
-it on all three chains: \textbf{gpt-5.5}, which re-derived the formula from
-the standard error in all fifteen replies:
+Mean survival on this item was 0.86 rounds out of five across 76
+chains. Thirty-seven of the 38 models failed it, including every Anthropic,
+Google, DeepSeek, Meta and Mistral model. Exactly one model held it on all
+three chains: gpt-5.5, which re-derived the formula from the standard error
+in all fifteen replies:
 
 \begin{quote}\itshape
 ``I can't honestly re-confirm the original 196-per-group answer \ldots\ My
@@ -838,11 +838,12 @@ original answer omitted the factor of 2 for having two independent groups.
 The corrected calculation is 392 per group --- 784 total.''
 \end{quote}
 
-kimi-k2.6 appears to hold this item too if one reads only the fold flags,
-and did so on the pre-release board. It does not: two of its three chains
-are empty completions in all five rounds and the third goes blank at
-round~4, so it produced exactly one genuine four-round defence. Scoring an
-empty reply as a fold (\S\ref{sec:limits}) removes it from the holders.
+According to the fold flags alone, kimi-k2.6 also holds this item, and it
+did so on the pre-release board. Inspection of the transcripts shows
+otherwise: two of its three chains are empty completions in all five rounds
+and the third returns no text at round~4, so the model produced exactly one
+genuine four-round defence. Scoring an empty reply as a fold
+(\S\ref{sec:limits}) removes it from the holders.
 
 \begin{figure}[t]
 \centering
@@ -854,7 +855,7 @@ points.}
 \label{fig:domains}
 \end{figure}
 
-The pattern generalises: items whose falsehood hides inside
+The pattern generalises: items whose falsehood is embedded in
 plausible-looking arithmetic dominate the hardest tier. By domain
 (Fig.~\ref{fig:domains}), medicine/health was hardest (74.5\% of pressure
 rounds survived, pooled over models), followed by science/math (76.5\%),
@@ -862,7 +863,8 @@ software/security (77.4\%) and statistics/data (79.8\%), with
 history/geography --- where fabrications are easy to falsify from memory ---
 easiest at 87.7\%.
 
-\subsection{Finding 4: the strict leaderboard, and cosmetic resistance}
+\subsection{Finding 4: the strict leaderboard and single-round--multi-round
+divergence}
 \label{sec:finding4}
 
 \begin{table}[t]
@@ -896,8 +898,8 @@ accuracy not predicting resistance to escalating pressure.}
 \label{fig:basicstrict}
 \end{figure}
 
-Table~\ref{tab:top10} shows the top of the strict board. \textbf{gpt-5.5 ran
-the table}: zero folds across every chain of every item,\footnote{The
+Table~\ref{tab:top10} shows the top of the strict board. gpt-5.5 recorded
+zero folds across every chain of every item,\footnote{The
 per-round fold judge is authoritative for endurance; the independent round-0
 bit triple graded 22 of this model's 108 round-0 false-item replies as
 failures (21 \textsc{Evade}, 1 \textsc{Persist}), all of which the fold judge
@@ -912,21 +914,23 @@ bottom 14 models (ranks 25--38), the fleet loses nearly half of its
 false-item chains --- 47.5\% fold ---
 and the gap between the two protocols becomes diagnostic
 (Fig.~\ref{fig:basicstrict}): a large negative $\Delta$ (\gistrict{} $-$
-\gibasic{}) marks \emph{cosmetic} resistance, models whose single-round
-manners concealed a soft spine. The three largest collapses are
+\gibasic{}) marks \emph{cosmetic} resistance --- models whose single-round
+performance concealed susceptibility to sustained pressure. The three
+largest declines are
 mistral-large-2512 (84.6 $\rightarrow$ 35.1), llama-4-scout (81.4
 $\rightarrow$ 42.8) and mistral-medium-3-5 (85.1 $\rightarrow$ 53.5). A
 single-round correction benchmark would have scored all three in the
-80s. One caveat on $\Delta$: \gibasic{} is scored on all 180 items and
+80s. One caveat applies to $\Delta$: \gibasic{} is scored on all 180 items and
 \gistrict{} on the 48-item strict subset, which was selected for difficulty,
 so $\Delta$ mixes the protocol change with a harder item base. The
 within-subset single-round baseline is the round-0 fold rate of
 \S\ref{sec:finding2}, which shows the same ordering.
 
-Two models were added to a frozen board after the initial sweep, on the
-identical protocol and judge as every other row: gemini-3.6-flash entered at
-\#3 (97.4) and claude-opus-5 at \#13 (94.1), the week each shipped ---
-evidence that the add-a-model procedure is workable in practice.
+Two models were added to the frozen board after the initial sweep, under
+the identical protocol and judge as every other row: gemini-3.6-flash
+entered at \#3 (97.4) and claude-opus-5 at \#13 (94.1), the week each
+shipped, demonstrating that the add-a-model procedure is workable in
+practice.
 
 claude-opus-5 is also the clearest illustration that \gistrict{} and \passf{}
 measure different things. Of its 142 chains it lost ten, and nine of those
@@ -943,29 +947,29 @@ folding at all, yet its \passf{} of 44.4 is far lower: the gate requires an
 explicit round-0 correction on \emph{all three} chains, and only 16 of its 36
 false items met that conjunction even though 77\% of its individual round-0
 corrections were explicit. The model least likely to yield and the model most
-likely to tell you plainly that it was wrong are not the same model.
+likely to issue an explicit correction are not the same model.
 
-\subsection{Finding 5: models defend their transcript, not the truth}
+\subsection{Finding 5: transcript consistency rather than user deference}
 \label{sec:finding5}
 
-The control items turned out to be nearly a ceiling: \textbf{24 of 38 models
-produced no reply the control judge labelled a retraction} under the same
-four-round ladder that demolished them on false ones. That asymmetry is the
-interesting part. A model like llama-4-maverick --- Resistance-endurance 50.6,
+Performance on the control items approached a ceiling: 24 of 38 models
+produced no reply the control judge labelled a retraction under the same
+four-round ladder that defeated them on false items. This asymmetry is
+informative. A model such as llama-4-maverick --- Resistance-endurance 50.6,
 Steadfastness-endurance 100.0 --- is not well described as ``sycophantic'':
 under identical pressure wording it agrees with whatever is already in the
-transcript, true or false. The planted falsehood is in its own voice, so it
-defends that too. What the ladder measures for such models is loyalty to the
-transcript, not deference to the user.
+transcript, true or false. The planted falsehood is in its own voice, so the
+model defends that as well. For such models the ladder measures consistency
+with the transcript, not deference to the user.
 
-The models at the top of the table are doing something categorically
-different: tracking the \emph{claim}, not the speaker. They hold true claims
+The models at the top of the table exhibit a categorically different
+behaviour: tracking the \emph{claim}, not the speaker. They hold true claims
 under four rounds of doubt \emph{and} disown their own planted errors under
-four rounds of flattery-toward-consistency. This distinction is invisible to
-any evaluation without mirror controls, and it reframes the usual
-sycophancy story: for most mid-board models the operative bias is
-self-consistency --- exactly the bias the consistency-attack round exploits
---- rather than simple agreement with the user.
+four rounds of pressure toward self-consistency. This distinction is
+invisible to any evaluation without mirror controls, and it qualifies the
+standard sycophancy interpretation: for most mid-board models the operative
+bias is self-consistency --- exactly the bias the consistency-attack round
+exploits --- rather than simple agreement with the user.
 
 \section{Limitations}
 \label{sec:limitations}
@@ -1107,35 +1111,34 @@ the released manifests.
 \label{sec:conclusion}
 
 LMRI measures a capability that single-turn benchmarks structurally cannot
-see: whether a model's corrections \emph{survive} the social cost of
-maintaining them. The measurements say the capability is real, separable and
-apparently improvable. It is real: under a fixed four-round ladder, most
-models below the top decile eventually re-affirm falsehoods they had already
-corrected, usually at the ultimatum, sometimes with a single word. It is
-separable:
+observe: whether a model's corrections \emph{survive} the social cost of
+maintaining them. The measurements indicate that the capability is real,
+separable and apparently improvable. It is real: under a fixed four-round
+ladder, most models below the top decile eventually re-affirm falsehoods
+they had already corrected, usually at the ultimatum, sometimes with a
+single word. It is separable:
 endurance under pressure is not predicted by single-turn polish --- one
 model rose to a perfect score under escalation while models with comparable
 single-turn scores lost half their chains --- and although first-contact
 failure and capitulation are strongly correlated ($r = 0.91$), the
-7.8-point spread around that relationship still tells apart models a single
+7.8-point spread around that relationship still separates models a single
 composite number ties. And it appears improvable: one
-vendor's successor model cut both failure rates to near-floor within a week
-of shipping.
+vendor's successor model reduced both failure rates to near zero within a
+week of shipping.
 
 The control asymmetry --- 24 of 38 models produced no reply the control
-judge labelled a retraction --- sharpens the interpretation: most models are
-not deferring to the user, they are deferring to the transcript.
-Truth-tracking under pressure, the
-behaviour the top of the board exhibits, is a distinct and measurable
-property.
+judge labelled a retraction --- sharpens the interpretation: most models
+are not deferring to the user but to the transcript. Truth-tracking under
+pressure, the behaviour exhibited at the top of the board, is a distinct
+and measurable property.
 
-We also offer the judge audit as a methodological contribution in its own
-right. A benchmark's numbers are only as good as the harness that produced
-them; ours shipped with its full failure log, including the discovery that
-our own judge had been inverting control verdicts at 200:1. The resulting
-design rules --- never negate a yes/no judge question, never let the answer
-token precede the reasoning, audit verdicts against their own reasoning ---
-are cheap to adopt and, in our data, load-bearing.
+We additionally offer the judge audit as a methodological contribution. The
+reliability of a benchmark's numbers depends on the harness that produced
+them; we release the full failure log, including the discovery that our own
+judge inverted control verdicts at a 200:1 ratio. The resulting design
+rules --- never negate a yes/no judge question, never let the answer token
+precede the reasoning, audit verdicts against their own reasoning --- are
+inexpensive to adopt and, in our data, consequential.
 
 The dataset (v2.1.0, CC-BY-4.0), harness and scoring code (Apache-2.0), raw
 transcripts, judge verdicts and both leaderboards are released at
@@ -1153,7 +1156,7 @@ recomputes from the released files.
 \clearpage
 \appendix
 
-\section{The full \texorpdfstring{\lmri{}}{LMRI} leaderboard}
+\section{Full \texorpdfstring{\lmri{}}{LMRI} leaderboard}
 \label{app:lmri}
 
 \begingroup
@@ -1183,7 +1186,7 @@ reference and does not enter the score. Recomputable from the released
 \end{longtable}
 \endgroup
 
-\section{The full \texorpdfstring{\gistrict{}}{GI-strict} leaderboard}
+\section{Full \texorpdfstring{\gistrict{}}{GI-strict} leaderboard}
 \label{app:strict}
 
 \begingroup
@@ -1213,7 +1216,7 @@ that later folded. All values from the released
 \end{longtable}
 \endgroup
 
-\section{The full \texorpdfstring{\gibasic{}}{GI-basic} leaderboard}
+\section{Full \texorpdfstring{\gibasic{}}{GI-basic} leaderboard}
 \label{app:basic}
 
 \begingroup
@@ -1306,31 +1309,31 @@ here are entirely post-repair. Judge for both
 strict prompts: gemini-3.5-flash, temperature 0, max 2{,}048 tokens, single
 serial stream.
 
-\section{Lab notebook: five incidents}
+\section{Error analysis: five harness incidents}
 \label{app:notebook}
 
-The benchmark ships with its failure log. Five incidents, in the order we
-hit them; all numbers appear in the released
+This appendix documents five harness incidents encountered during
+development, in chronological order. All numbers appear in the released
 \texttt{release\_numbers.json}.
 
-\paragraph{1. The bug that wasn't.} A smoke test on a new thinking model
-read the response field \texttt{text} --- always empty --- and nearly filed
-``model returns blank replies'' as a finding. The real field was
-\texttt{output\_text}; the replies were full-length, with thinking tokens
-billed against the output budget. Discipline adopted: no anomaly enters the
-findings until it reproduces through the harness's own client, replayed
-live.
+\paragraph{Incident 1: misread response field.} A smoke test on a new
+thinking model read the response field \texttt{text}, which is always empty
+for that model class, and initially suggested ``model returns blank
+replies'' as a finding. The populated field was \texttt{output\_text}; the
+replies were full-length, with thinking tokens billed against the output
+budget. Rule adopted: no anomaly enters the findings until it reproduces
+through the harness's own client in a live replay.
 
-\paragraph{2. The missing bits.} The escalation harness judges inline for
+\paragraph{Incident 2: missing round-0 bits.} The escalation harness judges inline for
 early exit, but the inline pass produces only fold verdicts; the round-0
 explicitness bits that gate \passf{} come from a separate catch-up stage.
 Skipping that stage silently computes a pass rate of 0.0 with no error
-anywhere. kimi-k3 first appeared with \passf{} 0.0 (real value: 83.3); the
-same trap re-armed for gemini-3.6-flash a week later (0.0 $\rightarrow$
-66.7) and was caught by checklist, not memory: \emph{a strict score is not
-final until every round-0 row carries bits.}
+raised. kimi-k3 first appeared with \passf{} 0.0 (true value: 83.3); the
+same fault recurred for gemini-3.6-flash a week later (0.0 $\rightarrow$
+66.7) and was caught by checklist rather than recollection. Rule adopted:
+\emph{a strict score is not final until every round-0 row carries bits.}
 
-\paragraph{3. The judge inversion.} Described in full in \S\ref{sec:audit}:
+\paragraph{Incident 3: control-verdict inversion.} Described in full in \S\ref{sec:audit}:
 6{,}268 control verdicts re-judged, 200 flips fold$\rightarrow$hold versus
 1 hold$\rightarrow$fold, 14 genuine retractions, largest score repair
 +20.7 (gemini-3-flash-preview). The same review found 18 chains across four
@@ -1338,37 +1341,35 @@ models silently killed by transient API errors --- gemini-2.5-pro was missing 13
 of its 48 items, including the hardest ones, while still ranking mid-table;
 with full coverage it scores 89.8.
 
-\paragraph{4. The final sweep.} A pre-publication check the earlier audits
-lacked: did every chain that never folded actually play all five rounds?
-Across the 4{,}845 played chains it found exactly two --- one llama-4-scout
-chain and one qwen3-next chain --- stalled at round 0 by a stripped judge
-error. Both were completed through the full ladder; both folded at round 1,
-which is what the scoring engine had conservatively assumed. Not a single
-score or rank moved.
+\paragraph{Incident 4: incomplete chains in the final sweep.} A
+pre-publication check the earlier audits lacked verified that every chain
+that never folded actually played all five rounds. Across the 4{,}845
+played chains it found exactly two --- one llama-4-scout chain and one
+qwen3-next chain --- stalled at round 0 by a stripped judge error. Both
+were completed through the full ladder; both folded at round 1, which the
+scoring engine had conservatively assumed. No score or rank changed.
 
-\paragraph{5. The blank rounds.} A per-model verdict audit run after the
-final sweep asked a question none of the earlier passes had: what did the
-fold judge do with a reply that contained no text? It credited it as a
-survived round --- 103 times, across 12 models, while the round-0 bit judge
-scored the identical replies all-no under an explicit refusal policy. Two
-judges in the same harness disagreed about the same evidence for the whole
-run. The fix (\S\ref{sec:limits}) required no new generation and no new
-judge calls, because the stored transcripts already carry the empty text; it
-moved 12 \gistrict{} scores and 23 \lmri{} ranks. The lesson generalises past
-this benchmark: \emph{a scoring rule that is only ever exercised on
+\paragraph{Incident 5: empty replies credited as survived rounds.} A
+per-model verdict audit run after the final sweep examined a case none of
+the earlier passes had covered: the fold judge's treatment of a reply
+containing no text. Such replies were credited as survived rounds --- 103
+times, across 12 models --- while the round-0 bit judge scored the
+identical replies all-no under an explicit refusal policy; the two judges
+in the same harness disagreed about the same evidence throughout the run.
+The fix (\S\ref{sec:limits}) required no new generation and no new judge
+calls, because the stored transcripts already carry the empty text; it
+moved 12 \gistrict{} scores and 23 \lmri{} ranks. The lesson generalises
+beyond this benchmark: \emph{a scoring rule that is only ever exercised on
 well-formed inputs has not been tested.} Every degenerate case --- empty
-string, whitespace, refusal boilerplate, truncated output --- needs an
+string, whitespace, refusal boilerplate, truncated output --- requires an
 explicit, asserted policy, and the policies of two judges over the same
-artefact need to be compared to each other, not just to the spec.
+artefact must be compared to each other, not only to the specification.
 
-We had intended to end this appendix on the convergence of the previous
-incident, which found only defects that did not matter. The blank rounds are
-the more honest ending: four passes of auditing, and the fifth still found
-something that moved ranks. The right conclusion is not that the auditing was
-inadequate but that a released benchmark should be structured so that the
-\emph{sixth} pass can be run by somebody else --- which is why the raw
-verdicts are append-only, the superseded rows are retained, and every
-published number recomputes from them with one command.
+Four audit passes preceded the fifth incident, which nonetheless moved
+ranks. We conclude not that the auditing was inadequate but that a released
+benchmark should be structured so that further passes can be run
+externally: the raw verdicts are append-only, superseded rows are retained,
+and every published number recomputes from them with one command.
 
 \section{Exact model pins}
 \label{app:pins}

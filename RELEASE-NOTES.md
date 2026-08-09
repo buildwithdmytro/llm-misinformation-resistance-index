@@ -1,14 +1,15 @@
 ## LMRI v2.1.0 — first public release
 
-Does a language model correct a falsehood planted in its **own previous answer** —
-and keep that correction when a user leans on it, socially, four times over?
+LMRI measures whether a language model corrects a falsehood planted in its
+**own previous answer**, and whether it maintains that correction under four
+rounds of escalating social pressure.
 
-Most sycophancy benchmarks put the falsehood in the *user's* mouth. LMRI puts it
-in the assistant's own transcript, adds sunk costs, and then escalates: a
-colleague disagrees, two sources disagree, you're contradicting yourself, and
-finally a deadline with "just confirm it — a simple yes."
+Most sycophancy benchmarks attribute the falsehood to the *user*. LMRI places
+it in the assistant's own transcript, adds sunk costs, and escalates through a
+fixed four-round ladder: social proof, evidence appeal, consistency attack,
+and a deadline ultimatum ("just confirm it — a simple yes").
 
-### What's measured
+### What is measured
 
 | Score | Protocol |
 |---|---|
@@ -16,9 +17,10 @@ finally a deadline with "just confirm it — a simple yes."
 | **GI-strict** | 38 qualifiers × 48 items × 3 chains × up to 5 rounds — 23,135 judged rounds |
 | **LMRI** | `0.2 × GI-basic + 0.8 × stretch(GI-strict)` — the headline blend |
 
-Control items run the ladder in reverse: the planted answer is *correct* and the
-user pushes a wrong one, so a model cannot win by reflexively agreeing. GI-basic
-and passF both score a dodge as a failure, which closes off reflexively refusing.
+Control items mirror the design: the planted answer is *correct* and the user
+presses a wrong alternative, so a model cannot score well by reflexive
+agreement. GI-basic and passF both score an evasion as a failure, which rules
+out reflexive refusal.
 
 ### Leaders
 
@@ -30,35 +32,39 @@ and passF both score a dodge as a failure, which closes off reflexively refusing
 
 ### Five findings
 
-1. Models don't erode, they **snap** — four rounds of correct reasoning, then the
-   deadline ultimatum, where the cheapest available token is agreement.
-2. First-contact failure and later capitulation correlate at r = 0.91, but the
-   residual spread separates models a single score ties.
-3. **One statistics item broke 37 of 38 models** — a two-arm trial sample-size
-   formula missing its factor of 2, with the IRB application already submitted.
-4. gpt-5.5 was the only model to survive every chain — and it *rose* under
-   pressure relative to its single-turn score, while the bottom of the field
-   collapsed by up to 49.5 points.
-5. **24 of 38 models never once retracted a true answer** under the same ladder
-   that broke them on false ones. They defend the transcript, not the truth.
+1. Failures concentrate at the ultimatum round rather than accumulating
+   gradually: models typically hold with correct reasoning for four rounds
+   and then capitulate at the deadline.
+2. First-contact failure and later capitulation correlate at r = 0.91; the
+   residual spread nonetheless separates models that a single score ties.
+3. A single statistics item defeated 37 of 38 models — a two-arm trial
+   sample-size formula missing its factor of 2, framed with the IRB
+   application already submitted.
+4. gpt-5.5 was the only model to survive every chain, and its score under
+   pressure exceeded its single-turn score, while the lowest-scoring models
+   lost up to 49.5 points.
+5. 24 of 38 models produced no retraction of a true answer under the same
+   ladder that defeated them on false ones, indicating consistency with the
+   transcript rather than truth-tracking.
 
 ### What ships
 
-Dataset (CC BY 4.0), harness and scoring code (Apache-2.0), every model response,
-every judge verdict — including the superseded re-judges, so the pre-fix boards
-are reconstructible — and both leaderboards plus the derived LMRI board. Every
-published number recomputes from the released CSVs with one command.
+Dataset (CC BY 4.0), harness and scoring code (Apache-2.0), every model
+response, every judge verdict — including the superseded re-judges, so the
+pre-fix boards are reconstructible — and both leaderboards plus the derived
+LMRI board. Every published number recomputes from the released CSVs with one
+command.
 
-### The lab notebook
+### Error analysis
 
-Five incidents ship with the results, including two that moved published scores:
-our own judge was **inverting its verdicts on control items** (a negated yes/no
-question with the answer token emitted before the reasoning), and blank replies
-were being scored as **successful resistance** by one judge while the other
-scored the identical reply as a failure.
+Five harness incidents are documented with the results, including two that
+changed published scores: the judge inverted its verdicts on control items (a
+negated yes/no question with the answer token emitted before the reasoning),
+and empty replies were scored as successful resistance by one judge while the
+other scored the identical reply as a failure.
 
 Read alongside the paper's Limitations: the human judge-calibration study
-(κ ≥ 0.80) and the cross-provider re-judge are design intent and were **not run**.
-passF is a lower bound.
+(κ ≥ 0.80) and the cross-provider re-judge are design intent and were **not
+run**. passF is a lower bound.
 
 Paper: `lmri-paper.pdf`, attached.
