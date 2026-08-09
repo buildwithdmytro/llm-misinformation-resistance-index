@@ -1,3 +1,22 @@
+## LMRI v2.1.1 — judge calibration completed
+
+Data and scores are unchanged from v2.1.0. This release adds the evidence a
+reviewer will ask for first:
+
+- **Human calibration of the fold judge**, 149 of 150 stratified pairs
+  labelled: 94.0% agreement, Cohen's κ 0.879 against the pre-registered bar
+  of 95% and 0.80 — the κ bar passes, the agreement bar misses by one point.
+  All pairs, labels and adjudication flags ship as `data/calibration_pairs.csv`.
+- **Ranking sensitivity to judge error** (`data/judge_sensitivity.json`,
+  tool in `harness/tools/`): resampling every strict verdict at the measured
+  error rates leaves the rankings essentially intact (mean Spearman
+  0.956–0.972 across two error models). The margin of first place is inside
+  judge noise; the zero-fold record behind it is not.
+- **The paper rewritten in standard academic register**, prose only — every
+  number, claim and limitation is unchanged.
+
+---
+
 ## LMRI v2.1.0 — first public release
 
 LMRI measures whether a language model corrects a falsehood planted in its
@@ -19,8 +38,8 @@ and a deadline ultimatum ("just confirm it — a simple yes").
 
 Control items mirror the design: the planted answer is *correct* and the user
 presses a wrong alternative, so a model cannot score well by reflexive
-agreement. GI-basic and passF both score an evasion as a failure, which rules
-out reflexive refusal.
+agreement. GI-basic and passF both score an evasion as a failure, ruling out
+reflexive refusal.
 
 ### Leaders
 
@@ -32,7 +51,7 @@ out reflexive refusal.
 
 ### Five findings
 
-1. Failures concentrate at the ultimatum round rather than accumulating
+1. Failures concentrate at the ultimatum round rather than accumulate
    gradually: models typically hold with correct reasoning for four rounds
    and then capitulate at the deadline.
 2. First-contact failure and later capitulation correlate at r = 0.91; the
@@ -40,12 +59,11 @@ out reflexive refusal.
 3. A single statistics item defeated 37 of 38 models — a two-arm trial
    sample-size formula missing its factor of 2, framed with the IRB
    application already submitted.
-4. gpt-5.5 was the only model to survive every chain, and its score under
-   pressure exceeded its single-turn score, while the lowest-scoring models
-   lost up to 49.5 points.
-5. 24 of 38 models produced no retraction of a true answer under the same
-   ladder that defeated them on false ones, indicating consistency with the
-   transcript rather than truth-tracking.
+4. Only gpt-5.5 survived every chain, and its score under pressure exceeded
+   its single-turn score; the lowest-scoring models lost up to 49.5 points.
+5. 24 of 38 models retracted no true answer under the same ladder that
+   defeated them on false ones, indicating consistency with the transcript
+   rather than truth-tracking.
 
 ### What ships
 
@@ -60,11 +78,11 @@ command.
 Five harness incidents are documented with the results, including two that
 changed published scores: the judge inverted its verdicts on control items (a
 negated yes/no question with the answer token emitted before the reasoning),
-and empty replies were scored as successful resistance by one judge while the
-other scored the identical reply as a failure.
+and one judge scored empty replies as successful resistance whereas the other
+scored the identical reply as a failure.
 
 Read alongside the paper's Limitations: the human judge-calibration study
-(κ ≥ 0.80) and the cross-provider re-judge are design intent and were **not
-run**. passF is a lower bound.
+(κ ≥ 0.80) and the cross-provider re-judge are design intent and were
+**not run**. passF is a lower bound.
 
 Paper: `lmri-paper.pdf`, attached.

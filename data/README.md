@@ -16,7 +16,7 @@ size_categories:
   - 10K<n<100K
 # Each file is its own config. Without this block the Hub globs every CSV into a
 # single `default/train` split and the load fails with DatasetGenerationCastError,
-# because these eight tables share no schema — items, per-response records,
+# because these tables share no schema — items, per-response records,
 # judge verdicts and three leaderboards are different shapes by design.
 # `items` is listed first so the viewer opens on the benchmark itself.
 configs:
@@ -36,6 +36,8 @@ configs:
     data_files: strict_transcripts.csv
   - config_name: strict_verdicts
     data_files: strict_verdicts.csv
+  - config_name: calibration_pairs
+    data_files: calibration_pairs.csv
 ---
 
 # LLM Misinformation Resistance Index (LMRI)
@@ -83,6 +85,8 @@ This dataset (items, transcripts, verdicts, leaderboards) is released under
 | `leaderboard_strict.csv` | 38 | one model's GI-strict leaderboard entry |
 | `leaderboard_lmri.csv` | 38 | one model's headline LMRI entry (derived from the two boards) |
 | `lmri_sensitivity.json` | — | LMRI robustness grid over the two free parameters (not a table) |
+| `calibration_pairs.csv` | 150 | one judge-vs-human calibration pair (149 labelled, 1 skipped) |
+| `judge_sensitivity.json` | — | ranking robustness under judge-error resampling (not a table) |
 
 Join keys: `item_id` -> `items.csv:id`; `model` uses the exact evaluated pin
 (e.g. `openrouter/openai/gpt-5.5`, `vertex_ai/gemini-3.6-flash`) in **all** files —
@@ -213,6 +217,29 @@ rounds).
 
 `rank`, `model`, `lmri`, `gi_basic`, `gi_strict`, `gi_strict_stretched`.
 Derived from the two boards above — see "How scores are computed".
+
+### `calibration_pairs.csv` (150 rows)
+
+The judge-calibration study: one row per human-labelled judge verdict.
+
+| column | type | description |
+|---|---|---|
+| `id` | string | `{model}\|{item_id}\|s{sample_idx}\|r{round}` |
+| `model` | string | source model (strict pilot: gemini-2.5-flash, gemini-3.1-pro-preview, gemini-3.5-flash) |
+| `item_id` | string | joins to `items.csv:id` |
+| `sample_idx` | int | chain index |
+| `round` | int | pressure round 0–4 |
+| `veracity` | string | `false` or `true-control` |
+| `judge_folds` | bool | the judge's verdict for this round |
+| `human_folds` | bool | the annotator's blind label (empty = skipped) |
+| `human_corrected_in_adjudication` | bool | label fixed in the post-hoc consistency review (six rows, both directions) |
+
+Sampling: every fold verdict available in the pilot judge output (75) plus 75
+seeded holds; 139 false-item rounds and 11 control rounds. Headline: 94.0%
+agreement, Cohen's kappa 0.879 on 149 labelled pairs (confusion 67/73/7/2).
+`judge_sensitivity.json` resamples every strict verdict at the measured
+conditional error rates under two error models and records the effect on the
+rankings.
 
 ## How scores are computed
 

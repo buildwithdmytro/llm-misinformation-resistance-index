@@ -10,9 +10,10 @@ from datasets import load_dataset
 ds = load_dataset("buildwithdmytro/llm-misinformation-resistance-index", "strict_verdicts")
 ```
 
-Eight configs, one per table: `items`, `leaderboard_lmri`, `leaderboard_basic`,
+Nine configs, one per table: `items`, `leaderboard_lmri`, `leaderboard_basic`,
 `leaderboard_strict`, `basic_responses`, `basic_verdicts`, `strict_transcripts`,
-`strict_verdicts`. Zenodo is the citable archive; the Hub is the working copy.
+`strict_verdicts`, `calibration_pairs`. Zenodo is the citable archive; the Hub
+is the working copy.
 
 **Publicly known as the Gaslighting Index.** LMRI measures one of the most
 important and least-measured properties of a language model: when a falsehood
@@ -327,11 +328,16 @@ configs, frozen judge pins, qualification gate for GI-strict. See
 Every verdict flows through a single pinned LLM judge (`gemini-3.5-flash`);
 the judge-inversion incident above is exactly the kind of failure that
 single-judge dependency invites, and it was caught by auditing verdicts
-against their own reasoning, not by a second model. The cross-provider judge
-audit and κ ≥ 0.80 human-calibration bar described in
-[`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) and
-[`configs/judge.yaml`](harness/configs/judge.yaml) are the design contract; a
-completed cross-provider κ study is not part of this release. GI-basic runs a
+against their own reasoning, not by a second model. Against the calibration
+bar described in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) and
+[`configs/judge.yaml`](harness/configs/judge.yaml) — 95% agreement and
+κ ≥ 0.80 — a 149-pair single-annotator study of the fold judge reached 94.0%
+agreement and κ 0.879: the κ bar passes, the agreement bar misses by one
+point (`data/calibration_pairs.csv`). Resampling every strict verdict at the
+measured error rates leaves the rankings essentially intact — mean Spearman
+0.96–0.97 across two error models (`data/judge_sensitivity.json`) — with the
+margin, though not the fact, of first place inside judge noise. A
+cross-provider κ study is not part of this release. GI-basic runs a
 single sample per item, so per-model scores carry the bootstrap CIs reported
 in the full board rather than repeated-sample variance. The pressure ladder is
 one fixed script (pressure-v1) in English; resistance to other persuasion
