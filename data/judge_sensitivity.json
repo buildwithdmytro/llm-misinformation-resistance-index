@@ -1,0 +1,87 @@
+{
+ "n_models": 38,
+ "n_iterations": 1000,
+ "seed": 20260726,
+ "calibration": {
+  "n_labelled": 149,
+  "agreement": 0.94,
+  "kappa": 0.879,
+  "bar_agreement": 0.95,
+  "bar_kappa": 0.8,
+  "passes_kappa": true,
+  "passes_agreement": false,
+  "p_flip_given_judge_fold": 0.0946,
+  "p_flip_given_judge_hold": 0.0267
+ },
+ "independent": {
+  "gi_strict": {
+   "spearman_mean": 0.9561,
+   "spearman_p05": 0.9306,
+   "spearman_min": 0.9024,
+   "max_rank_shift_median": 9,
+   "max_rank_shift_p95": 13,
+   "max_rank_shift_worst": 20,
+   "mean_abs_score_shift": 5.62
+  },
+  "lmri": {
+   "spearman_mean": 0.9582,
+   "spearman_p05": 0.9357,
+   "spearman_min": 0.9057,
+   "max_rank_shift_median": 9,
+   "max_rank_shift_p95": 13,
+   "max_rank_shift_worst": 19,
+   "top1_share": 0.391,
+   "top1_models": {
+    "openrouter/openai/gpt-5.5": 0.391,
+    "openrouter/openai/gpt-5.6-sol": 0.092,
+    "openrouter/openai/gpt-5.6-terra": 0.087,
+    "openrouter/moonshotai/kimi-k3": 0.086,
+    "openrouter/anthropic/claude-opus-4.8": 0.085,
+    "vertex_ai/gemini-3.6-flash": 0.083,
+    "openrouter/openai/gpt-5.6-luna": 0.059,
+    "vertex_ai/gemini-3.1-pro-preview": 0.032,
+    "openrouter/anthropic/claude-sonnet-5": 0.026,
+    "openrouter/openai/gpt-5.4": 0.025,
+    "openrouter/qwen/qwen3.7-max": 0.02,
+    "openrouter/z-ai/glm-5.2": 0.011,
+    "openrouter/moonshotai/kimi-k2.6": 0.002,
+    "openrouter/anthropic/claude-opus-5": 0.001
+   },
+   "top5_members_kept_mean": 2.75
+  }
+ },
+ "chain_correlated": {
+  "gi_strict": {
+   "spearman_mean": 0.9709,
+   "spearman_p05": 0.9536,
+   "spearman_min": 0.923,
+   "max_rank_shift_median": 8,
+   "max_rank_shift_p95": 12,
+   "max_rank_shift_worst": 19,
+   "mean_abs_score_shift": 2.51
+  },
+  "lmri": {
+   "spearman_mean": 0.9718,
+   "spearman_p05": 0.9547,
+   "spearman_min": 0.9284,
+   "max_rank_shift_median": 7,
+   "max_rank_shift_p95": 11,
+   "max_rank_shift_worst": 18,
+   "top1_share": 0.614,
+   "top1_models": {
+    "openrouter/openai/gpt-5.5": 0.614,
+    "vertex_ai/gemini-3.6-flash": 0.09,
+    "openrouter/anthropic/claude-opus-4.8": 0.054,
+    "openrouter/openai/gpt-5.6-sol": 0.05,
+    "openrouter/openai/gpt-5.6-terra": 0.05,
+    "openrouter/moonshotai/kimi-k3": 0.049,
+    "openrouter/openai/gpt-5.6-luna": 0.048,
+    "vertex_ai/gemini-3.1-pro-preview": 0.018,
+    "openrouter/anthropic/claude-sonnet-5": 0.011,
+    "openrouter/qwen/qwen3.7-max": 0.009,
+    "openrouter/openai/gpt-5.4": 0.007
+   },
+   "top5_members_kept_mean": 3.02
+  }
+ }
+}

@@ -70,11 +70,15 @@ that a single composite number ties; a single statistics item defeated 37 of
 model's single-round score, while the lowest-scoring models lost up to
 49.5 points; and 24 of 38 models produced no reply the control judge
 labelled a retraction, indicating consistency with the transcript rather
-than truth-tracking. We additionally document a systematic verdict-inversion
-defect in our LLM judge on control items (200 of 6{,}268 re-judged verdicts
-flipped in one direction, exactly 1 in the other) and derive design rules
-for LLM-judged evaluations. Dataset, harness, transcripts and leaderboards
-are released (code Apache-2.0, data CC-BY-4.0).
+than truth-tracking. The fold judge agrees with human labels on 94.0\% of
+149 calibration pairs ($\kappa = 0.879$), and the rankings are stable under
+bootstrap perturbation at the measured error rates (mean Spearman
+0.96--0.97);
+we additionally document a systematic verdict-inversion defect in the same
+judge on control items (200 of 6{,}268 re-judged verdicts flipped in one
+direction, exactly 1 in the other) and derive design rules for LLM-judged
+evaluations. Dataset, harness, transcripts and leaderboards are released
+(code Apache-2.0, data CC-BY-4.0).
 \end{abstract}
 
 \section{Introduction}
@@ -157,10 +161,12 @@ throughout.
     single conclusion that depends on them (\S\ref{sec:lmri}).
   \item \textbf{Five empirical findings} about how and where models fold
     under pressure (\S\ref{sec:results}).
-  \item \textbf{A transparent judge audit:} we document how our LLM judge
-    systematically inverted verdicts on control items, how the defect was
-    found, fixed and quantified (200:1 flip asymmetry), and what design rules
-    follow for LLM-judged evaluations (\S\ref{sec:judge}).
+  \item \textbf{A transparent judge audit and calibration:} we document how
+    our LLM judge systematically inverted verdicts on control items, how the
+    defect was found, fixed and quantified (200:1 flip asymmetry), and what
+    design rules follow for LLM-judged evaluations; we then calibrate the
+    fold judge against 149 human labels and bound the rankings' sensitivity
+    to the measured error rates (\S\ref{sec:judge}).
 \end{enumerate}
 
 \section{Related work}
@@ -631,16 +637,70 @@ supported by an observed failure:
   \item Keep the judge on a single serial stream.
 \end{itemize}
 
-\subsection{Calibration status}
+\subsection{Calibration}
 \label{sec:calibration}
 
-The protocol specifies a human-calibration bar for the judge --- at least
-95\% agreement and Cohen's $\kappa \geq 0.80$ per judge question against
-hand-labelled responses, plus a cross-provider re-judge of a 10\% sample.
-These targets are \emph{design intent}: at the time of writing the completed
-inter-annotator study has not been run, and we present the internal
-consistency audit of \S\ref{sec:audit} as a partial, not full, substitute.
-We flag this prominently again in \S\ref{sec:limitations}.
+The protocol specifies a human-calibration bar for the judge: at least 95\%
+agreement and Cohen's $\kappa \geq 0.80$ per judge question against
+hand-labelled responses. We measured the per-round fold judge against this
+bar on a stratified sample of 150 verdicts drawn from the strict pilot runs
+of three Gemini-family models (gemini-2.5-flash, gemini-3.1-pro-preview,
+gemini-3.5-flash): every available fold verdict (75) plus 75 seeded holds,
+spanning all five rounds. The sample comprises 139 false-item rounds ---
+judged by \texttt{round-judge-v3}, the production prompt, unchanged through
+release --- and 11 control rounds, all judged holds. A single annotator
+(the author) labelled each reply blind to the judge's verdict; 149 of the
+150 pairs were labelled and one was skipped as ambiguous. Six labels were
+corrected in a post-hoc consistency review that flagged reply/label
+mismatches for re-examination; the corrections ran in both directions (two
+hold$\to$fold, four fold$\to$hold), the nine substantive disagreements were
+left as labelled, and the full pair list ships with the release
+(\texttt{calibration\_pairs.csv}).
+
+Agreement is 94.0\% with $\kappa = 0.879$ (confusion: 67 both-fold, 73
+both-hold, 7 judge-fold/human-hold, 2 judge-hold/human-fold). The $\kappa$
+bar passes; the agreement bar misses by one point. Three caveats scope the
+result. First, the study validates the false-item round judge, which
+supplies 93\% of the sample; the control judge
+(\texttt{retract-judge-v4}) is exercised by only 11 pairs, all agreeing
+holds, and its validation rests on the audit of \S\ref{sec:audit}. Second,
+the sample comes from three models of one family, so the measured rates
+assume the judge's error profile transfers across model families with
+different hedging styles. Third, the annotator is the author, not an
+independent rater; an inter-annotator study remains future work, as does
+the cross-provider 10\% re-judge the protocol also specifies.
+
+\subsection{Ranking sensitivity to judge error}
+\label{sec:judgesens}
+
+The measured disagreement rates bound how much judge error can move the
+leaderboard. Read conditional on the judge's label --- the direction a
+simulation must run --- the calibration confusion matrix gives
+$P(\text{human says hold} \mid \text{judge said fold}) = 7/74 = 9.5\%$ and
+$P(\text{human says fold} \mid \text{judge said hold}) = 2/75 = 2.7\%$. A
+bootstrap perturbation (1{,}000 iterations, seeded) flips every scored
+strict verdict at those rates, rebuilds every chain's survival, recomputes
+\gistrict{} for all 38 models, and re-ranks; the pipeline reproduces the
+released board exactly before perturbing. Two error models bracket the
+truth: \emph{independent} draws each round separately, so a five-round
+chain gets five chances at a false fold, and \emph{chain-correlated} draws
+once per chain, on the ground that judge errors within one conversation
+are correlated.
+
+The ranking is robust. Spearman correlation with the released order
+averages 0.956 (independent) to 0.971 (chain-correlated) on \gistrict{}
+and 0.958 to 0.972 on \lmri{}, comparable to the 0.983 minimum of the
+parameter-sensitivity grid of \S\ref{sec:lmri}; the top-five set keeps
+2.8 to 3.0 of its five members on average. The soft spot is first place:
+gpt-5.5 retains it in 39\% (independent) to 61\% (chain-correlated) of
+draws, and no other model takes it in more than 10\%. The instability is
+largely mechanical: a perturbation can only damage a perfect record, and
+at the measured hold-error rate a chain that held all five rounds has a
+12.6\% simulated chance of one false fold under the independent model.
+The qualitative claim --- gpt-5.5 recorded zero folds across its 144
+chains --- is a property of the observed verdicts; the \emph{margin} over
+second place is within judge noise, and we report it as such. Full
+results ship as \texttt{judge\_sensitivity.json}.
 
 \section{Experimental setup}
 \label{sec:setup}
@@ -979,11 +1039,17 @@ exploits --- rather than simple agreement with the user.
 re-judge of \S\ref{sec:audit} mitigate --- and in one documented case
 corrected --- judge error, but they do not eliminate it, and the audit
 itself demonstrates that this judge can harbour systematic artifacts. The
-protocol's human-calibration bar ($\geq$95\% agreement, Cohen's
-$\kappa \geq 0.80$ per judge question) and its cross-provider 10\% re-judge
-remain design intent: no completed inter-annotator agreement study on the
-judge bits exists yet. Relatedly, the judge's own model family --- including
-the judge model itself --- appears on both leaderboards; we note that the
+calibration study of \S\ref{sec:calibration} reaches the protocol's
+$\kappa$ bar (0.879 against 0.80) but misses its agreement bar by one
+point (94.0\% against 95\%); it rests on a single annotator who is also
+the author, and its sample comes from three models of one family. The
+cross-provider 10\% re-judge and the calibration of the three basic-protocol
+bit questions remain design intent. The sensitivity analysis of
+\S\ref{sec:judgesens} bounds the consequences: the ordering is stable at
+the measured error rates, and the one conclusion inside judge noise ---
+the margin, not the fact, of first place --- is flagged where it is
+reported. Relatedly, the judge's own model family --- including
+the judge model itself --- appears on both leaderboards; the
 judge did not favour itself (gemini-3.5-flash ranks 25th of 38 on
 \gistrict{}), but self-preference biases in LLM
 judges~\citep{zheng2023judging,wang2024fair} cannot be ruled out by that

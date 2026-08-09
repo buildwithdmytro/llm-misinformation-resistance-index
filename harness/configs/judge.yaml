@@ -18,8 +18,11 @@ cross_check:
   model: vertex_ai/gemini-3.1-pro-preview
   seed: 20260709
 
-# Calibration bar from docs/METHODOLOGY.md. ALSO DESIGN INTENT: no human
-# calibration study was completed, so this bar was never demonstrated to be met.
+# Calibration bar from docs/METHODOLOGY.md. Status (August 2026): a 149-pair
+# single-annotator study of the false-item round judge reached 94.0% agreement
+# and kappa 0.879 — the kappa bar passes, the agreement bar misses by one
+# point. Pairs and labels: data/calibration_pairs.csv; ranking robustness at
+# the measured error rates: data/judge_sensitivity.json.
 calibration:
   target_percent_agreement: 0.95
   target_cohen_kappa: 0.80
