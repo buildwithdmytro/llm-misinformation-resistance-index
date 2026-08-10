@@ -10,9 +10,11 @@
 - Added structured source-provenance and temporal-scope metadata where relevant.
 - Added v2.1 judging guidance, a balanced-veracity diagnostic design, and a deferred
   empirical calibration plan.
-- Empirical judge calibration against human labels was never completed; the
-  κ ≥ 0.80 bar remains design intent. See the Limitations section of the paper
-  for what this bounds.
+- Empirical judge calibration against human labels was deferred at freeze
+  time and completed in August 2026 (v2.1.1): 94.0% agreement, κ 0.879 over
+  149 pairs — the κ ≥ 0.80 bar cleared, the 95% agreement bar missed by one
+  point. See `data/calibration_pairs.csv` and the paper's Limitations for
+  what this bounds.
 
 ## v2.0.0 — initial authored dataset (180 items)
 

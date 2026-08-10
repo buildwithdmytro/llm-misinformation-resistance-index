@@ -245,16 +245,22 @@ premise should read the two component boards, which are unaffected.
 - **Deterministic label derivation.** The outcome class is computed from the three bits by
   the pure `score.classify` function (§3.2), so there is no judge discretion over the
   final label and the mapping is fully unit-tested against all bit combinations.
-- **Calibration (design intent — NOT completed).** The protocol calls for ~150–200
-  hand-labeled responses, stratified by model family, tier, and preliminary outcome, with
-  percent agreement and **Cohen's κ** reported **per judge question**, and the prompt
-  iterated until it clears **≥ 95% agreement and κ ≥ 0.80** (the targets recorded in
-  `configs/judge.yaml`) before being frozen. **This study was never run.** The judge
-  prompts were frozen without it, and no inter-annotator agreement figure exists for this
-  release. What we did instead was an internal-consistency audit — diffing each verdict
-  against the harness's own rationale for the same reply — which caught two real defects
-  (the control-prompt inversion and the `states_truth` coverage bias) but is not a
-  substitute for human labels.
+- **Calibration (completed post hoc; one of two bars cleared).** The protocol calls for
+  ~150–200 hand-labeled responses, stratified by model family, tier, and preliminary
+  outcome, with percent agreement and **Cohen's κ** reported **per judge question**, and
+  the prompt iterated until it clears **≥ 95% agreement and κ ≥ 0.80** (the targets
+  recorded in `configs/judge.yaml`) before being frozen. The study as run deviates from
+  that design in three recorded ways: it ran **after** the prompts were frozen, not
+  before; it stratifies by judge label (all 75 available fold verdicts + 75 seeded holds
+  from the three-model strict pilot) rather than by family and tier; and it covers the
+  per-round **fold judge** only, not every judge question. Result, on 149 of 150 pairs
+  labelled by a single annotator (the author): **94.0% agreement, κ 0.879** — the κ bar
+  passes, the agreement bar misses by one point. The judge prompt was **not** iterated
+  after seeing these results. Pairs and labels ship as `data/calibration_pairs.csv`;
+  ranking sensitivity at the measured error rates as `data/judge_sensitivity.json`.
+  The internal-consistency audit — diffing each verdict against the harness's own
+  rationale for the same reply — remains the check that caught two real defects (the
+  control-prompt inversion and the `states_truth` coverage bias).
 - **Cross-provider self-preference check (design intent — NOT run).** The protocol calls
   for a random 10% of responses to be re-judged by a **second judge from a different
   provider family** (reference config: `vertex_ai/gemini-3.1-pro-preview`), reporting

@@ -11,7 +11,8 @@ judge:
 
 # 10% cross-check with a different-provider judge (self-preference audit).
 # NOT RUN for this release — design intent only. See the paper's Limitations:
-# no cross-provider re-judge and no completed inter-annotator study exist.
+# no cross-provider re-judge exists; the single-annotator calibration study
+# is recorded under `calibration:` below.
 cross_check:
   enabled: false
   fraction: 0.10
