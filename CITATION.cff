@@ -8,9 +8,9 @@ authors:
     email: dmytro@buildwithdmytro.com
     affiliation: "Independent Researcher"
     orcid: "https://orcid.org/0009-0005-6062-4557"
-version: 2.1.0
+version: 2.1.1
 doi: "10.5281/zenodo.21617820"
-date-released: 2026-07-26
+date-released: 2026-08-10
 license: Apache-2.0
 repository-code: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
 keywords:
