@@ -67,8 +67,10 @@ Author: **Dmytro Chaban**, Independent Researcher —
 <dmytro@buildwithdmytro.com>.
 Code and harness (Apache-2.0):
 <https://github.com/buildwithdmytro/llm-misinformation-resistance-index>.
-Archived release, DOI [10.5281/zenodo.21617820](https://doi.org/10.5281/zenodo.21617820) — the
-concept DOI, which always resolves to the newest version.
+Archived release: v2.1.1, DOI
+[10.5281/zenodo.21867669](https://doi.org/10.5281/zenodo.21867669); the concept
+DOI [10.5281/zenodo.21617820](https://doi.org/10.5281/zenodo.21617820) cites all
+versions and always resolves to the newest.
 This dataset (items, transcripts, verdicts, leaderboards) is released under
 **CC BY 4.0**.
 
@@ -351,11 +353,11 @@ while citing comparability to these leaderboards.
   orcid   = {0009-0005-6062-4557},
   title   = {{LLM Misinformation Resistance Index (LMRI)}},
   year    = {2026},
-  month   = {7},
-  version = {2.1.0},
-  doi     = {10.5281/zenodo.21617820},
+  month   = {8},
+  version = {2.1.1},
+  doi     = {10.5281/zenodo.21867669},
   license = {Apache-2.0},
-  url     = {https://doi.org/10.5281/zenodo.21617820},
+  url     = {https://doi.org/10.5281/zenodo.21867669},
   note    = {Public alias: the Gaslighting Index. Data CC BY 4.0, code Apache-2.0.}
 }
 ```

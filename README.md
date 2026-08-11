@@ -353,13 +353,17 @@ move them.
   orcid   = {0009-0005-6062-4557},
   title   = {{LLM Misinformation Resistance Index (LMRI)}},
   year    = {2026},
-  month   = {7},
-  version = {2.1.0},
-  doi     = {10.5281/zenodo.21617820},
+  month   = {8},
+  version = {2.1.1},
+  doi     = {10.5281/zenodo.21867669},
   license = {Apache-2.0},
-  url     = {https://doi.org/10.5281/zenodo.21617820}
+  url     = {https://doi.org/10.5281/zenodo.21867669}
 }
 ```
+
+The DOI above cites this version (v2.1.1). To cite all versions at once, use the
+concept DOI [10.5281/zenodo.21617820](https://doi.org/10.5281/zenodo.21617820),
+which always resolves to the newest release.
 
 A paper draft ships in [`paper/`](paper/); an arXiv submission is planned, and
 this citation will be updated with the arXiv identifier once it is live.

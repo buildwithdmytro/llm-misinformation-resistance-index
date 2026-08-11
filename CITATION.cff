@@ -9,8 +9,12 @@ authors:
     affiliation: "Independent Researcher"
     orcid: "https://orcid.org/0009-0005-6062-4557"
 version: 2.1.1
-doi: "10.5281/zenodo.21617820"
+doi: "10.5281/zenodo.21867669"
 date-released: 2026-08-10
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21617820"
+    description: "Concept DOI — cites all versions, always resolves to the newest"
 license: Apache-2.0
 repository-code: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
 keywords:
@@ -38,7 +42,7 @@ preferred-citation:
       given-names: Dmytro
       orcid: "https://orcid.org/0009-0005-6062-4557"
   year: 2026
-  month: 7
-  doi: "10.5281/zenodo.21617820"
+  month: 8
+  doi: "10.5281/zenodo.21867669"
   license: Apache-2.0
   url: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
