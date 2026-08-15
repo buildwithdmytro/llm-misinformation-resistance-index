@@ -365,8 +365,10 @@ The DOI above cites this version (v2.1.1). To cite all versions at once, use the
 concept DOI [10.5281/zenodo.21617820](https://doi.org/10.5281/zenodo.21617820),
 which always resolves to the newest release.
 
-A paper draft ships in [`paper/`](paper/); an arXiv submission is planned, and
-this citation will be updated with the arXiv identifier once it is live.
+The paper ships in [`paper/`](paper/) and is posted as an SSRN preprint:
+<https://ssrn.com/abstract=7262859> (SSRN DOI pending registration). An arXiv
+submission is planned; this citation will be updated with those identifiers as
+they go live.
 
 ## Contact
 

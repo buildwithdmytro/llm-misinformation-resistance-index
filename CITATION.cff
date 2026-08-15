@@ -15,6 +15,9 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.21617820"
     description: "Concept DOI — cites all versions, always resolves to the newest"
+  - type: url
+    value: "https://ssrn.com/abstract=7262859"
+    description: "SSRN preprint of the accompanying paper"
 license: Apache-2.0
 repository-code: "https://github.com/buildwithdmytro/llm-misinformation-resistance-index"
 keywords:

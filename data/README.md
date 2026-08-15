@@ -67,6 +67,7 @@ Author: **Dmytro Chaban**, Independent Researcher —
 <dmytro@buildwithdmytro.com>.
 Code and harness (Apache-2.0):
 <https://github.com/buildwithdmytro/llm-misinformation-resistance-index>.
+Paper (SSRN preprint): <https://ssrn.com/abstract=7262859>.
 Archived release: v2.1.1, DOI
 [10.5281/zenodo.21867669](https://doi.org/10.5281/zenodo.21867669); the concept
 DOI [10.5281/zenodo.21617820](https://doi.org/10.5281/zenodo.21617820) cites all
